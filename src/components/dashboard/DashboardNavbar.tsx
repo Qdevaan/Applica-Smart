@@ -11,6 +11,7 @@ import {
   Menu,
   X,
   Bell,
+  Search,
 } from "lucide-react";
 import { APP_NAME } from "../../utils/constants";
 import { useAuth } from "../../hooks/useAuth";
@@ -25,6 +26,7 @@ const DashboardNavbar = () => {
   const navLinks = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { label: "Applications", href: "/applications", icon: Briefcase },
+    { label: "Jobs", href: "/jobs", icon: Search },
     { label: "Resume", href: "/resume", icon: FileText },
     { label: "Settings", href: "/settings", icon: Settings },
   ];

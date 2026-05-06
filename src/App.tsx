@@ -10,6 +10,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Settings from "./pages/Settings";
 import CVGenerator from "./pages/CVGenerator";
+import Jobs from "./pages/Jobs";
 
 const App = () => {
   if (supabaseMisconfigured) {
@@ -43,6 +44,7 @@ const App = () => {
               <Route path="/resume" element={<CVGenerator />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/jobs" element={<Jobs />} />
             </Route>
           </Routes>
         </Router>
