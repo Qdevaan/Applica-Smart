@@ -1,35 +1,59 @@
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Briefcase, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
+import { jobApplicationService } from "../services/jobApplication.service";
+
+interface AppStats {
+  total: number;
+  applied: number;
+  pending: number;
+  interview: number;
+  rejected: number;
+  accepted: number;
+}
 
 const Dashboard = () => {
   const { user, profile } = useAuth();
+  const [stats, setStats] = useState<AppStats | null>(null);
 
-  const stats = [
+  useEffect(() => {
+    if (!user?.id) return;
+    jobApplicationService.getApplicationStats(user.id).then(({ data }) => {
+      if (data) setStats(data);
+    });
+  }, [user?.id]);
+
+  const responseRate =
+    stats && stats.total > 0
+      ? `${Math.round(((stats.interview + stats.accepted) / stats.total) * 100)}%`
+      : "—";
+
+  const statCards = [
     {
       label: "Applications Sent",
-      value: "47",
+      value: stats?.total ?? "—",
       icon: Briefcase,
       color: "text-[#780000]",
       bgColor: "bg-[#780000]/10",
     },
     {
       label: "Response Rate",
-      value: "28%",
+      value: responseRate,
       icon: TrendingUp,
       color: "text-green-600",
       bgColor: "bg-green-100",
     },
     {
       label: "Pending",
-      value: "15",
+      value: stats?.pending ?? "—",
       icon: Clock,
       color: "text-[#669BBC]",
       bgColor: "bg-[#669BBC]/10",
     },
     {
       label: "Interviews",
-      value: "5",
+      value: stats?.interview ?? "—",
       icon: CheckCircle,
       color: "text-[#C1121F]",
       bgColor: "bg-[#C1121F]/10",
@@ -60,9 +84,8 @@ const Dashboard = () => {
             Here's what's happening with your job applications today.
           </p>
 
-          {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
-            {stats.map((stat, index) => {
+            {statCards.map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <motion.div
@@ -98,7 +121,6 @@ const Dashboard = () => {
             })}
           </div>
 
-          {/* Placeholder Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -119,8 +141,9 @@ const Dashboard = () => {
               className="text-sm sm:text-base"
               style={{ color: "var(--color-text-muted)" }}
             >
-              Your recent job applications will appear here. The application
-              tracking system is coming soon!
+              {stats?.total === 0
+                ? "No applications yet. Go to the Jobs page to find matching positions."
+                : "Your recent job applications will appear here."}
             </p>
           </motion.div>
         </motion.div>
