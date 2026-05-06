@@ -162,6 +162,36 @@ class CVService {
       throw error;
     }
   }
+
+  /**
+   * Get the most recently used template id and file URL for a user.
+   * Returns null when the user has no CV documents yet.
+   */
+  async getLastTemplate(
+    userId: string
+  ): Promise<{ templateId: CVTemplate; fileUrl: string | null; createdAt: string } | null> {
+    try {
+      const { data, error } = await supabase
+        .from("cv_documents")
+        .select("template_used, file_url, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data || !data.template_used) return null;
+
+      return {
+        templateId: data.template_used as CVTemplate,
+        fileUrl: (data.file_url as string | null) ?? null,
+        createdAt: data.created_at as string,
+      };
+    } catch (error) {
+      console.error("Error fetching last template:", error);
+      return null;
+    }
+  }
 }
 
 export const cvService = new CVService();
