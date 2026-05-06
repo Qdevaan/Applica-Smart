@@ -57,6 +57,44 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [theme, isLoggedIn]);
 
+  useEffect(() => {
+    let active = true;
+    const apply = (hex: string | null) => {
+      const root = document.documentElement;
+      if (hex) {
+        root.style.setProperty("--color-primary", hex);
+        root.style.setProperty(
+          "--color-primary-hover",
+          `color-mix(in srgb, ${hex} 85%, white 15%)`
+        );
+      } else {
+        root.style.removeProperty("--color-primary");
+        root.style.removeProperty("--color-primary-hover");
+      }
+    };
+
+    const fetchAndApply = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.user) {
+        apply(null);
+        return;
+      }
+      const { data } = await supabase
+        .from("profiles")
+        .select("accent_color")
+        .eq("id", session.user.id)
+        .single();
+      if (!active) return;
+      apply((data?.accent_color as string | null | undefined) ?? null);
+    };
+
+    fetchAndApply();
+
+    return () => {
+      active = false;
+    };
+  }, [isLoggedIn]);
+
   const toggleTheme = () => {
     // Allow theme toggle always (both logged in and not logged in)
     setThemeState((prev) => (prev === "light" ? "dark" : "light"));
