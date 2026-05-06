@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PDFViewer } from "@react-pdf/renderer";
 import { Download, FileText, Check, Eye, ArrowLeft, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import {
   cvService,
@@ -42,6 +42,19 @@ const CVGenerator = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [activeCategory, setActiveCategory] = useState<TemplateCategory>("all");
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const param = searchParams.get("template");
+    if (!param) return;
+    const exists = availableTemplates.some((t) => t.id === param);
+    if (exists) {
+      setSelectedTemplate(param as CVTemplate);
+    }
+    // run once on mount with the initial param value
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredTemplates = useMemo(
     () =>
