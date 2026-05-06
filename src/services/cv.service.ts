@@ -3,7 +3,14 @@ import { pdf } from "@react-pdf/renderer";
 import { supabase } from "../lib/supabase";
 import type { Profile } from "../lib/supabase";
 
-export type CVTemplate = "modern" | "classic" | "minimal";
+export type CVTemplate =
+  | "modern"
+  | "classic"
+  | "minimal"
+  | "executive"
+  | "creative"
+  | "ats"
+  | "compact";
 
 export interface CVTemplateOption {
   id: CVTemplate;
@@ -30,6 +37,30 @@ export const availableTemplates: CVTemplateOption[] = [
     name: "Minimal Clean",
     description: "Simple and elegant design with maximum readability",
     preview: "/templates/minimal-preview.png",
+  },
+  {
+    id: "executive",
+    name: "Executive",
+    description: "Formal navy & gold layout for senior roles and traditional industries",
+    preview: "/templates/executive-preview.png",
+  },
+  {
+    id: "creative",
+    name: "Creative",
+    description: "Vibrant accent palette for design, marketing, and product roles",
+    preview: "/templates/creative-preview.png",
+  },
+  {
+    id: "ats",
+    name: "ATS-Optimized",
+    description: "Plain single-column layout designed to pass automated resume screeners",
+    preview: "/templates/ats-preview.png",
+  },
+  {
+    id: "compact",
+    name: "Compact",
+    description: "Two-column dense layout that fits a strong career on a single page",
+    preview: "/templates/compact-preview.png",
   },
 ];
 
@@ -67,6 +98,38 @@ class CVService {
             "../components/cv/templates/MinimalTemplate"
           );
           const doc = React.createElement(MinimalTemplate, { profile });
+          blob = await pdf(doc as any).toBlob();
+          break;
+        }
+        case "executive": {
+          const { ExecutiveTemplate } = await import(
+            "../components/cv/templates/ExecutiveTemplate"
+          );
+          const doc = React.createElement(ExecutiveTemplate, { profile });
+          blob = await pdf(doc as any).toBlob();
+          break;
+        }
+        case "creative": {
+          const { CreativeTemplate } = await import(
+            "../components/cv/templates/CreativeTemplate"
+          );
+          const doc = React.createElement(CreativeTemplate, { profile });
+          blob = await pdf(doc as any).toBlob();
+          break;
+        }
+        case "ats": {
+          const { ATSTemplate } = await import(
+            "../components/cv/templates/ATSTemplate"
+          );
+          const doc = React.createElement(ATSTemplate, { profile });
+          blob = await pdf(doc as any).toBlob();
+          break;
+        }
+        case "compact": {
+          const { CompactTemplate } = await import(
+            "../components/cv/templates/CompactTemplate"
+          );
+          const doc = React.createElement(CompactTemplate, { profile });
           blob = await pdf(doc as any).toBlob();
           break;
         }

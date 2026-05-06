@@ -26,13 +26,8 @@ dist-ssr
 *.sw?
 
 # Python
-FYP/venv/
-FYP/__pycache__/
-FYP/**/__pycache__/
 *.pyc
 *.pyo
 
-# FYP output artifacts (generated — do not commit)
-FYP/data/processed/
-FYP/final_results.json
-FYP/jobs.json
+# Backend ML server (separate repo: github.com/Qdevaan/Applica_Smart_server)
+Applica_Smart_server/

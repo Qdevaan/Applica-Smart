@@ -12,6 +12,10 @@ import {
 import { ModernTemplate } from "../components/cv/templates/ModernTemplate";
 import { ClassicTemplate } from "../components/cv/templates/ClassicTemplate";
 import { MinimalTemplate } from "../components/cv/templates/MinimalTemplate";
+import { ExecutiveTemplate } from "../components/cv/templates/ExecutiveTemplate";
+import { CreativeTemplate } from "../components/cv/templates/CreativeTemplate";
+import { ATSTemplate } from "../components/cv/templates/ATSTemplate";
+import { CompactTemplate } from "../components/cv/templates/CompactTemplate";
 import Button from "../components/ui/Button";
 import Toast from "../components/ui/Toast";
 
@@ -67,6 +71,14 @@ const CVGenerator = () => {
         return <ClassicTemplate profile={profile} />;
       case "minimal":
         return <MinimalTemplate profile={profile} />;
+      case "executive":
+        return <ExecutiveTemplate profile={profile} />;
+      case "creative":
+        return <CreativeTemplate profile={profile} />;
+      case "ats":
+        return <ATSTemplate profile={profile} />;
+      case "compact":
+        return <CompactTemplate profile={profile} />;
       default:
         return undefined;
     }
