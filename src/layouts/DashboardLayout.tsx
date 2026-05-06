@@ -2,17 +2,18 @@ import { Outlet } from "react-router-dom";
 import DashboardNavbar from "../components/dashboard/DashboardNavbar";
 import ProtectedRoute from "../components/ProtectedRoute";
 import ErrorBoundary from "../components/ui/ErrorBoundary";
+import ImmersiveBackground from "../components/ui/ImmersiveBackground";
 
 const DashboardLayout = () => {
   return (
     <ProtectedRoute>
       <ErrorBoundary>
-        <div className="min-h-screen" style={{ backgroundColor: "var(--color-background)" }}>
+        <ImmersiveBackground intensity="subtle">
           <DashboardNavbar />
           <main className="pt-16">
             <Outlet />
           </main>
-        </div>
+        </ImmersiveBackground>
       </ErrorBoundary>
     </ProtectedRoute>
   );

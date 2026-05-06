@@ -74,10 +74,7 @@ const CVGenerator = () => {
 
   if (!profile) {
     return (
-      <div
-        className="min-h-screen flex items-center justify-center"
-        style={{ backgroundColor: "var(--color-background)" }}
-      >
+      <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <FileText
             className="w-16 h-16 mx-auto mb-4"
@@ -99,18 +96,18 @@ const CVGenerator = () => {
   }
 
   return (
-    <div
-      className="min-h-screen py-8 px-4 sm:px-6 lg:px-8"
-      style={{ backgroundColor: "var(--color-background)" }}
-    >
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1
-            className="text-3xl sm:text-4xl font-bold mb-3"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3"
             style={{ color: "var(--color-text-main)" }}
           >
-            Resume Builder
+            Resume{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#780000] to-[#C1121F]">
+              Builder
+            </span>
           </h1>
           <p
             className="text-base sm:text-lg"
@@ -128,16 +125,16 @@ const CVGenerator = () => {
               {availableTemplates.map((template) => (
                 <motion.div
                   key={template.id}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.03, y: -4 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setSelectedTemplate(template.id)}
-                  className={`relative p-6 rounded-xl cursor-pointer transition-all ${
+                  className={`relative p-6 rounded-2xl cursor-pointer transition-all backdrop-blur-md ${
                     selectedTemplate === template.id
-                      ? "ring-2 shadow-lg"
-                      : "shadow"
+                      ? "ring-2 shadow-xl"
+                      : "shadow-md hover:shadow-xl"
                   }`}
                   style={{
-                    backgroundColor: "var(--color-surface)",
+                    backgroundColor: "color-mix(in srgb, var(--color-surface) 85%, transparent)",
                     borderColor:
                       selectedTemplate === template.id
                         ? "var(--color-primary)"

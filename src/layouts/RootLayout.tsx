@@ -1,10 +1,26 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import ImmersiveBackground from "../components/ui/ImmersiveBackground";
 
 const RootLayout = () => {
+  const location = useLocation();
+  // Landing page renders its own immersive hero — skip background here to avoid stacking.
+  const skipBackground = location.pathname === "/";
+
+  if (skipBackground) {
+    return (
+      <div
+        className="min-h-screen"
+        style={{ backgroundColor: "var(--color-background)" }}
+      >
+        <Outlet />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-[#FDF0D5]">
+    <ImmersiveBackground intensity="normal">
       <Outlet />
-    </div>
+    </ImmersiveBackground>
   );
 };
 

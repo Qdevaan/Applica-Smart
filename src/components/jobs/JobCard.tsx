@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import type { JobAnalysis } from "../../services/pipeline.service";
 
@@ -17,10 +18,14 @@ const JobCard = ({ job, rank }: Props) => {
   const [showLetter, setShowLetter] = useState(false);
 
   return (
-    <div
-      className="rounded-xl p-5 shadow-sm border mb-4"
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -2 }}
+      transition={{ duration: 0.4, delay: rank * 0.05 }}
+      className="rounded-2xl p-5 shadow-md border mb-4 backdrop-blur-md hover:shadow-xl transition-shadow"
       style={{
-        backgroundColor: "var(--color-surface)",
+        backgroundColor: "color-mix(in srgb, var(--color-surface) 85%, transparent)",
         borderColor: "var(--color-accent-light)",
       }}
     >
@@ -79,7 +84,7 @@ const JobCard = ({ job, rank }: Props) => {
           {job.cover_letter}
         </pre>
       )}
-    </div>
+    </motion.div>
   );
 };
 

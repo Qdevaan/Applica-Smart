@@ -73,10 +73,7 @@ const Settings = () => {
   };
 
   return (
-    <div
-      className="min-h-screen p-4 sm:p-6 md:p-8"
-      style={{ backgroundColor: "var(--color-background)" }}
-    >
+    <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -86,7 +83,9 @@ const Settings = () => {
             className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 md:mb-8"
             style={{ color: "var(--color-text-main)" }}
           >
-            Settings
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#780000] to-[#C1121F]">
+              Settings
+            </span>
           </h1>
 
           {/* Account Settings */}

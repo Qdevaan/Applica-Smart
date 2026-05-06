@@ -1,5 +1,5 @@
 import { motion, type HTMLMotionProps } from "framer-motion";
-import type { ReactNode } from "react";
+import type { ReactNode, CSSProperties } from "react";
 
 interface ButtonProps extends Omit<HTMLMotionProps<"button">, "children"> {
   children: ReactNode;
@@ -22,10 +22,12 @@ const Button = ({
   const baseStyles =
     "font-semibold rounded-full transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
 
-  const variantStyles = {
+  const variantStyles: Record<string, CSSProperties> = {
     primary: {
-      backgroundColor: "var(--color-primary)",
+      backgroundImage:
+        "linear-gradient(to right, var(--color-primary), var(--color-primary-hover))",
       color: "white",
+      boxShadow: "0 10px 25px -10px rgba(120, 0, 0, 0.45)",
     },
     secondary: {
       backgroundColor: "var(--color-text-main)",
@@ -43,7 +45,7 @@ const Button = ({
   };
 
   const variants = {
-    primary: "hover:shadow-lg",
+    primary: "hover:shadow-2xl",
     secondary: "hover:opacity-90",
     outline: "hover:opacity-80",
     ghost: "hover:opacity-80",
@@ -57,10 +59,16 @@ const Button = ({
 
   const widthClass = fullWidth ? "w-full" : "";
 
+  const hoverScale = disabled || isLoading ? 1 : 1.03;
+  const hoverShadow =
+    variant === "primary" && !disabled && !isLoading
+      ? "0 20px 40px -12px rgba(120, 0, 0, 0.55)"
+      : undefined;
+
   return (
     <motion.button
-      whileHover={{ scale: disabled || isLoading ? 1 : 1.02 }}
-      whileTap={{ scale: disabled || isLoading ? 1 : 0.98 }}
+      whileHover={{ scale: hoverScale, boxShadow: hoverShadow }}
+      whileTap={{ scale: disabled || isLoading ? 1 : 0.97 }}
       className={`${baseStyles} ${variants[variant]} ${sizes[size]} ${widthClass} ${className} flex items-center justify-center gap-2`}
       style={variantStyles[variant]}
       disabled={disabled || isLoading}

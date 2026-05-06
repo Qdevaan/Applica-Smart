@@ -57,19 +57,29 @@ const Jobs = () => {
   };
 
   return (
-    <div
-      className="min-h-screen p-4 sm:p-6 md:p-8"
-      style={{ backgroundColor: "var(--color-background)" }}
-    >
+    <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <span
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold mb-4"
+            style={{
+              backgroundColor: "var(--color-accent-light)",
+              color: "var(--color-primary)",
+            }}
+          >
+            <Zap className="w-3.5 h-3.5" />
+            AI-Powered Match
+          </span>
           <h1
-            className="text-3xl font-bold mb-2"
+            className="text-3xl sm:text-4xl md:text-5xl font-bold mb-3"
             style={{ color: "var(--color-text-main)" }}
           >
-            Job Recommendations
+            Find Your{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#780000] to-[#C1121F]">
+              Perfect Match
+            </span>
           </h1>
-          <p className="mb-6" style={{ color: "var(--color-text-muted)" }}>
+          <p className="mb-6 text-base sm:text-lg" style={{ color: "var(--color-text-body)" }}>
             Run the ML pipeline to find jobs from the scraped board that best match
             your profile. Ollama must be running locally for cover letter generation.
           </p>

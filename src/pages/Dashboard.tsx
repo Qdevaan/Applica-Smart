@@ -61,10 +61,7 @@ const Dashboard = () => {
   ];
 
   return (
-    <div
-      className="min-h-screen p-4 sm:p-6 md:p-8"
-      style={{ backgroundColor: "var(--color-background)" }}
-    >
+    <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -75,7 +72,11 @@ const Dashboard = () => {
             className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2"
             style={{ color: "var(--color-text-main)" }}
           >
-            Welcome back, {profile?.name || user?.email?.split("@")[0]}!
+            Welcome back,{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#780000] to-[#C1121F]">
+              {profile?.name || user?.email?.split("@")[0]}
+            </span>
+            !
           </h1>
           <p
             className="text-base sm:text-lg mb-6 sm:mb-8"
@@ -93,9 +94,10 @@ const Dashboard = () => {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: index * 0.1 }}
-                  className="rounded-xl p-4 sm:p-6 shadow-sm border hover:shadow-md transition-shadow"
+                  whileHover={{ y: -4, scale: 1.02 }}
+                  className="rounded-2xl p-4 sm:p-6 shadow-md border backdrop-blur-md hover:shadow-xl transition-shadow"
                   style={{
-                    backgroundColor: "var(--color-surface)",
+                    backgroundColor: "color-mix(in srgb, var(--color-surface) 85%, transparent)",
                     borderColor: "var(--color-accent-light)",
                   }}
                 >
@@ -125,9 +127,9 @@ const Dashboard = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="rounded-xl p-4 sm:p-6 md:p-8 shadow-sm border"
+            className="rounded-2xl p-4 sm:p-6 md:p-8 shadow-md border backdrop-blur-md"
             style={{
-              backgroundColor: "var(--color-surface)",
+              backgroundColor: "color-mix(in srgb, var(--color-surface) 85%, transparent)",
               borderColor: "var(--color-accent-light)",
             }}
           >
