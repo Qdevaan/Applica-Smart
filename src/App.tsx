@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./hooks/useAuth";
 import { ThemeProvider } from "./hooks/useTheme";
+import { supabaseMisconfigured } from "./lib/supabase";
 import RootLayout from "./layouts/RootLayout";
 import DashboardLayout from "./layouts/DashboardLayout";
 import Landing from "./pages/Landing";
@@ -11,6 +12,18 @@ import Settings from "./pages/Settings";
 import CVGenerator from "./pages/CVGenerator";
 
 const App = () => {
+  if (supabaseMisconfigured) {
+    return (
+      <div style={{ padding: 40, fontFamily: "monospace" }}>
+        <h2>Configuration Error</h2>
+        <p>
+          Missing <code>VITE_SUPABASE_URL</code> or{" "}
+          <code>VITE_SUPABASE_ANON_KEY</code> in your <code>.env</code> file.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <ThemeProvider>
       <AuthProvider>
