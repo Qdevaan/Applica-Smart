@@ -3,14 +3,12 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
-  Briefcase,
   FileText,
   Settings,
   User,
   LogOut,
   Menu,
   X,
-  Bell,
   Search,
 } from "lucide-react";
 import { APP_NAME } from "../../utils/constants";
@@ -25,7 +23,6 @@ const DashboardNavbar = () => {
 
   const navLinks = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Applications", href: "/applications", icon: Briefcase },
     { label: "Jobs", href: "/jobs", icon: Search },
     { label: "Resume", href: "/resume", icon: FileText },
     { label: "Settings", href: "/settings", icon: Settings },
@@ -112,22 +109,6 @@ const DashboardNavbar = () => {
 
           {/* Right Section */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Notifications */}
-            <motion.button
-              whileHover={{ scale: 1.1, rotate: -10 }}
-              whileTap={{ scale: 0.92 }}
-              className="relative p-2 rounded-lg transition-colors"
-              style={{ color: "var(--color-text-main)" }}
-            >
-              <Bell className="w-5 h-5" />
-              <motion.span
-                animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute top-1 right-1 w-2 h-2 rounded-full"
-                style={{ backgroundColor: "var(--color-primary-hover)" }}
-              />
-            </motion.button>
-
             {/* Profile Dropdown */}
             <div className="relative">
               <motion.button
