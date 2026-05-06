@@ -13,6 +13,7 @@ import { ModernTemplate } from "../components/cv/templates/ModernTemplate";
 import { ClassicTemplate } from "../components/cv/templates/ClassicTemplate";
 import { MinimalTemplate } from "../components/cv/templates/MinimalTemplate";
 import Button from "../components/ui/Button";
+import Toast from "../components/ui/Toast";
 
 const CVGenerator = () => {
   const navigate = useNavigate();
@@ -23,6 +24,7 @@ const CVGenerator = () => {
   const [showPreview, setShowPreview] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
 
   const handleDownload = async () => {
     if (!profile || !selectedTemplate) return;
@@ -30,10 +32,10 @@ const CVGenerator = () => {
     setIsDownloading(true);
     try {
       await cvService.downloadCV(profile, selectedTemplate);
-      alert("CV downloaded successfully!");
+      setToast({ message: "CV downloaded successfully!", type: "success" });
     } catch (error) {
       console.error("Download error:", error);
-      alert("Failed to download CV. Please try again.");
+      setToast({ message: "Failed to download CV. Please try again.", type: "error" });
     } finally {
       setIsDownloading(false);
     }
@@ -44,16 +46,12 @@ const CVGenerator = () => {
 
     setIsUploading(true);
     try {
-      const fileUrl = await cvService.uploadCV(
-        user.id,
-        profile,
-        selectedTemplate
-      );
+      const fileUrl = await cvService.uploadCV(user.id, profile, selectedTemplate);
       await cvService.saveCVRecord(user.id, selectedTemplate, fileUrl);
-      alert("CV saved to your account successfully!");
+      setToast({ message: "CV saved to your account successfully!", type: "success" });
     } catch (error) {
       console.error("Upload error:", error);
-      alert("Failed to save CV. Please try again.");
+      setToast({ message: "Failed to save CV. Please try again.", type: "error" });
     } finally {
       setIsUploading(false);
     }
@@ -259,6 +257,14 @@ const CVGenerator = () => {
               </div>
             )}
           </>
+        )}
+        {toast && (
+          <Toast
+            message={toast.message}
+            type={toast.type}
+            isVisible={!!toast}
+            onClose={() => setToast(null)}
+          />
         )}
       </div>
     </div>
