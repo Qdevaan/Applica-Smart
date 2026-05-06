@@ -10,6 +10,88 @@ export const supabase = supabaseMisconfigured
   : createClient(supabaseUrl, supabaseAnonKey);
 
 // Types for our database
+export interface Link {
+  label: string;
+  url: string;
+  icon?: string;
+}
+
+export interface Project {
+  id: string;
+  name: string;
+  role?: string;
+  description?: string;
+  link?: string;
+  tech?: string[];
+  startDate?: string;
+  endDate?: string;
+}
+
+export interface Certification {
+  id: string;
+  name: string;
+  issuer: string;
+  date?: string;
+  url?: string;
+  credentialId?: string;
+}
+
+export type LanguageProficiency =
+  | 'native'
+  | 'fluent'
+  | 'professional'
+  | 'intermediate'
+  | 'basic';
+
+export interface Language {
+  name: string;
+  proficiency: LanguageProficiency;
+}
+
+export interface Publication {
+  id: string;
+  title: string;
+  venue?: string;
+  year?: string;
+  url?: string;
+  authors?: string[];
+}
+
+export interface Award {
+  id: string;
+  title: string;
+  issuer?: string;
+  year?: string;
+  description?: string;
+}
+
+export interface Volunteer {
+  id: string;
+  organization: string;
+  role: string;
+  startDate?: string;
+  endDate?: string;
+  description?: string;
+}
+
+export interface ReferenceEntry {
+  id: string;
+  name: string;
+  contact?: string;
+  relation?: string;
+}
+
+export type SkillLevelValue = 1 | 2 | 3 | 4 | 5;
+export interface SkillLevel {
+  name: string;
+  level: SkillLevelValue;
+}
+
+export interface TemplatePrefs {
+  defaultTemplateId?: string;
+  accentColor?: string;
+}
+
 export interface Profile {
   id: string;
   name: string | null;
@@ -25,6 +107,20 @@ export interface Profile {
   cv_link: string | null;
   created_at: string;
   updated_at: string;
+
+  // New optional fields (added 2026-05-07)
+  photo_url?: string | null;
+  accent_color?: string | null;
+  skill_levels?: SkillLevel[];
+  links?: Link[];
+  projects?: Project[];
+  certifications?: Certification[];
+  languages?: Language[];
+  publications?: Publication[];
+  awards?: Award[];
+  volunteer?: Volunteer[];
+  references_list?: ReferenceEntry[];
+  template_prefs?: TemplatePrefs;
 }
 
 export interface Education {
