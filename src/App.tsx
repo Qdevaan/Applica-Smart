@@ -40,7 +40,6 @@ const App = () => {
             {/* Protected/Dashboard Routes */}
             <Route element={<DashboardLayout />}>
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/applications" element={<Dashboard />} />
               <Route path="/resume" element={<CVGenerator />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/profile" element={<Profile />} />
