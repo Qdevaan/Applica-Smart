@@ -1,5 +1,27 @@
 import { supabase } from '../lib/supabase';
-import type { Profile, Education, Experience } from '../lib/supabase';
+import type { Profile, Education, Experience, TemplatePrefs } from '../lib/supabase';
+
+export interface NotificationPrefs {
+  email: boolean;
+  push: boolean;
+  applicationUpdates: boolean;
+}
+
+const DEFAULT_PREFS: NotificationPrefs = {
+  email: true,
+  push: false,
+  applicationUpdates: true,
+};
+
+export function parsePreferences(profile: Profile | null): NotificationPrefs {
+  if (!profile?.preferences) return { ...DEFAULT_PREFS };
+  try {
+    const parsed = JSON.parse(profile.preferences) as Partial<NotificationPrefs>;
+    return { ...DEFAULT_PREFS, ...parsed };
+  } catch {
+    return { ...DEFAULT_PREFS };
+  }
+}
 
 export const profileService = {
   // Get user profile
@@ -142,6 +164,80 @@ export const profileService = {
     } catch (error: any) {
       console.error('Update CV link error:', error);
       return { data: null, error: error.message || 'Failed to update CV link' };
+    }
+  },
+
+  async updatePhotoUrl(userId: string, photoUrl: string | null) {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ photo_url: photoUrl, updated_at: new Date().toISOString() })
+        .eq('id', userId)
+        .select()
+        .single();
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error: any) {
+      console.error('Update photo url error:', error);
+      return { data: null, error: error.message || 'Failed to update photo' };
+    }
+  },
+
+  async updatePreferences(userId: string, prefs: NotificationPrefs) {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({
+          preferences: JSON.stringify(prefs),
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', userId)
+        .select()
+        .single();
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error: any) {
+      console.error('Update preferences error:', error);
+      return { data: null, error: error.message || 'Failed to update preferences' };
+    }
+  },
+
+  async updateAccentColor(userId: string, accentColor: string | null) {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ accent_color: accentColor, updated_at: new Date().toISOString() })
+        .eq('id', userId)
+        .select()
+        .single();
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error: any) {
+      console.error('Update accent color error:', error);
+      return { data: null, error: error.message || 'Failed to update accent color' };
+    }
+  },
+
+  async updateDefaultTemplate(userId: string, templateId: string) {
+    try {
+      const current = await supabase
+        .from('profiles')
+        .select('template_prefs')
+        .eq('id', userId)
+        .single();
+      const existing = (current.data?.template_prefs as TemplatePrefs | null) ?? {};
+      const next: TemplatePrefs = { ...existing, defaultTemplateId: templateId };
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ template_prefs: next, updated_at: new Date().toISOString() })
+        .eq('id', userId)
+        .select()
+        .single();
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error: any) {
+      console.error('Update default template error:', error);
+      return { data: null, error: error.message || 'Failed to update default template' };
     }
   },
 };
