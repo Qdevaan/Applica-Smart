@@ -1,6 +1,26 @@
 # 🚀 Quick Start Guide
 
-## Run the Frontend (Right Now!)
+## 1. Set Up Your Backend (Supabase)
+
+This project uses Supabase for its backend (authentication, database).
+
+1.  **Create a Supabase project** at supabase.com.
+2.  In your Supabase project, go to **Project Settings > API**.
+3.  Create a `.env` file in the root of this project.
+4.  Copy your **Project URL** and **anon key** into the `.env` file:
+
+```env
+VITE_SUPABASE_URL=your_supabase_project_url
+VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+```
+
+## 2. Install Dependencies
+
+```bash
+npm install
+```
+
+## 3. Run the Frontend
 
 ```bash
 npm run dev

@@ -20,7 +20,7 @@ const DashboardNavbar = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { signOut, profile } = useAuth();
+  const { signOut } = useAuth();
 
   const navLinks = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -32,13 +32,11 @@ const DashboardNavbar = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-      // Small delay to ensure state is cleared before navigation
       setTimeout(() => {
         navigate("/login", { replace: true });
       }, 100);
     } catch (error) {
       console.error("Logout error:", error);
-      // Navigate anyway on error
       navigate("/login", { replace: true });
     }
   };
@@ -46,13 +44,20 @@ const DashboardNavbar = () => {
   const isActiveRoute = (path: string) => location.pathname === path;
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm border-b border-[#669BBC]/20 dark:border-gray-700 shadow-sm">
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-sm"
+      style={{
+        backgroundColor: "var(--color-surface)",
+        borderBottom: "1px solid var(--color-accent)",
+      }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             to="/dashboard"
-            className="flex items-center gap-2 text-xl font-bold text-[#780000] dark:text-[#C1121F] hover:text-[#C1121F] dark:hover:text-[#780000] transition-colors"
+            className="flex items-center gap-2 text-xl font-bold transition-colors"
+            style={{ color: "var(--color-primary)" }}
           >
             {APP_NAME}
           </Link>
@@ -66,11 +71,15 @@ const DashboardNavbar = () => {
                 <Link
                   key={link.href}
                   to={link.href}
-                  className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                    isActive
-                      ? "bg-[#780000]/10 dark:bg-[#780000]/20 text-[#780000] dark:text-[#C1121F]"
-                      : "text-[#003049] dark:text-gray-300 hover:bg-[#FDF0D5]/50 dark:hover:bg-gray-700 hover:text-[#780000] dark:hover:text-[#C1121F]"
-                  }`}
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors"
+                  style={{
+                    backgroundColor: isActive
+                      ? "var(--color-accent-light)"
+                      : "transparent",
+                    color: isActive
+                      ? "var(--color-primary)"
+                      : "var(--color-text-main)",
+                  }}
                 >
                   <Icon className="w-4 h-4" />
                   {link.label}
@@ -82,16 +91,23 @@ const DashboardNavbar = () => {
           {/* Right Section */}
           <div className="hidden md:flex items-center gap-3">
             {/* Notifications */}
-            <button className="relative p-2 text-[#003049] dark:text-gray-300 hover:text-[#780000] dark:hover:text-[#C1121F] hover:bg-[#FDF0D5]/50 dark:hover:bg-gray-700 rounded-lg transition-colors">
+            <button
+              className="relative p-2 rounded-lg transition-colors"
+              style={{ color: "var(--color-text-main)" }}
+            >
               <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-[#C1121F] rounded-full"></span>
+              <span
+                className="absolute top-1 right-1 w-2 h-2 rounded-full"
+                style={{ backgroundColor: "var(--color-primary-hover)" }}
+              ></span>
             </button>
 
             {/* Profile Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-2 text-[#003049] dark:text-gray-300 hover:text-[#780000] dark:hover:text-[#C1121F] hover:bg-[#FDF0D5]/50 dark:hover:bg-gray-700 rounded-lg transition-colors"
+                className="flex items-center gap-2 p-2 rounded-lg transition-colors"
+                style={{ color: "var(--color-text-main)" }}
               >
                 <User className="w-5 h-5" />
               </button>
@@ -102,11 +118,16 @@ const DashboardNavbar = () => {
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-[#669BBC]/20 dark:border-gray-700 py-2"
+                    className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-2"
+                    style={{
+                      backgroundColor: "var(--color-surface)",
+                      border: "1px solid var(--color-accent)",
+                    }}
                   >
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 px-4 py-2 text-[#003049] dark:text-gray-300 hover:bg-[#FDF0D5]/50 dark:hover:bg-gray-700 hover:text-[#780000] dark:hover:text-[#C1121F] transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 transition-colors"
+                      style={{ color: "var(--color-text-main)" }}
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <User className="w-4 h-4" />
@@ -114,16 +135,21 @@ const DashboardNavbar = () => {
                     </Link>
                     <Link
                       to="/settings"
-                      className="flex items-center gap-2 px-4 py-2 text-[#003049] dark:text-gray-300 hover:bg-[#FDF0D5]/50 dark:hover:bg-gray-700 hover:text-[#780000] dark:hover:text-[#C1121F] transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 transition-colors"
+                      style={{ color: "var(--color-text-main)" }}
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <Settings className="w-4 h-4" />
                       Settings
                     </Link>
-                    <hr className="my-2 border-[#669BBC]/20 dark:border-gray-700" />
+                    <hr
+                      className="my-2"
+                      style={{ borderColor: "var(--color-accent)" }}
+                    />
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 px-4 py-2 w-full text-left text-[#C1121F] hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 w-full text-left transition-colors"
+                      style={{ color: "var(--color-primary)" }}
                     >
                       <LogOut className="w-4 h-4" />
                       Logout
@@ -137,7 +163,8 @@ const DashboardNavbar = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden p-2 text-[#003049] hover:text-[#780000] hover:bg-[#FDF0D5]/50 rounded-lg transition-colors"
+            className="md:hidden p-2 rounded-lg transition-colors"
+            style={{ color: "var(--color-text-main)" }}
           >
             {isMobileMenuOpen ? (
               <X className="w-6 h-6" />
@@ -155,7 +182,11 @@ const DashboardNavbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-[#669BBC]/20"
+            className="md:hidden"
+            style={{
+              backgroundColor: "var(--color-surface)",
+              borderTop: "1px solid var(--color-accent)",
+            }}
           >
             <div className="px-4 py-4 space-y-2">
               {navLinks.map((link) => {
@@ -166,11 +197,15 @@ const DashboardNavbar = () => {
                     key={link.href}
                     to={link.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors ${
-                      isActive
-                        ? "bg-[#780000]/10 text-[#780000]"
-                        : "text-[#003049] hover:bg-[#FDF0D5]/50"
-                    }`}
+                    className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
+                    style={{
+                      backgroundColor: isActive
+                        ? "var(--color-accent-light)"
+                        : "transparent",
+                      color: isActive
+                        ? "var(--color-primary)"
+                        : "var(--color-text-main)",
+                    }}
                   >
                     <Icon className="w-5 h-5" />
                     {link.label}
@@ -178,12 +213,13 @@ const DashboardNavbar = () => {
                 );
               })}
 
-              <hr className="my-2 border-[#669BBC]/20" />
+              <hr style={{ borderColor: "var(--color-accent)" }} className="my-2" />
 
               <Link
                 to="/profile"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium text-[#003049] hover:bg-[#FDF0D5]/50 transition-colors"
+                className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
+                style={{ color: "var(--color-text-main)" }}
               >
                 <User className="w-5 h-5" />
                 Profile
@@ -191,7 +227,8 @@ const DashboardNavbar = () => {
 
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-3 px-4 py-3 w-full text-left rounded-lg font-medium text-[#C1121F] hover:bg-red-50 transition-colors"
+                className="flex items-center gap-3 px-4 py-3 w-full text-left rounded-lg font-medium transition-colors"
+                style={{ color: "var(--color-primary)" }}
               >
                 <LogOut className="w-5 h-5" />
                 Logout

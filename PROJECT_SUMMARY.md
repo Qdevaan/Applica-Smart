@@ -12,7 +12,7 @@
 - 🔗 Footer with newsletter signup
 - 🎨 Smooth animations and transitions throughout
 
-### 2. **Authentication System** (Frontend Complete)
+### 2. **Authentication System** (Supabase Integrated)
 
 - 🔐 Login page with form validation
 - 📝 Signup page with password strength indicator
@@ -20,7 +20,7 @@
 - 🎨 Beautiful auth layouts with animated backgrounds
 - 🔄 Social auth buttons (Google & GitHub placeholders)
 - 🎭 Framer Motion animations on all auth pages
-- 🛡️ Protected route handling
+- 🛡️ Protected route handling with Supabase Auth
 
 ### 3. **Routing** (React Router DOM)
 
@@ -41,7 +41,7 @@
 ### 5. **Utils & Helpers**
 
 - Axios instance with interceptors
-- Auth helpers (token management)
+- Supabase client and service layer
 - API routes constants
 - Zod validators
 - Animation variants
@@ -114,41 +114,27 @@ src/
 
 ## 🚀 How to Run the Project
 
-### Frontend
+1.  **Set up Supabase:**
+    - Create a project at [supabase.com](https://supabase.com).
+    - In your Supabase project, go to **Project Settings > API** to find your URL and anon key.
 
-1. **Install dependencies:**
+2.  **Create `.env` file:**
+    - Create a file named `.env` in the project root and add your Supabase credentials:
+    ```env
+    VITE_SUPABASE_URL=your_supabase_project_url
+    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+    ```
 
-   ```bash
-   npm install
-   ```
+3.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-2. **Create `.env` file:**
-
-   ```env
-   VITE_API_URL=http://localhost:5000/api
-   ```
-
-3. **Run development server:**
-
-   ```bash
-   npm run dev
-   ```
-
-4. **Open browser:**
-   Navigate to `http://localhost:5173`
-
-### Backend (Required)
-
-**You need to set up the backend API server!**
-
-📖 **See `BACKEND_API_GUIDE.md` for complete instructions**
-
-Quick backend stack:
-
-- Node.js + Express.js
-- MongoDB + Mongoose
-- JWT authentication
-- bcrypt for passwords
+4.  **Run development server:**
+    ```bash
+    npm run dev
+    ```
+    Then open your browser to `http://localhost:5173`.
 
 ## 🎯 Features Demonstrated
 
