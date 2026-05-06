@@ -76,8 +76,15 @@ const Settings = () => {
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+            },
+          }}
         >
           <h1
             className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 md:mb-8"
@@ -89,10 +96,15 @@ const Settings = () => {
           </h1>
 
           {/* Account Settings */}
-          <div
-            className="rounded-xl p-4 sm:p-6 shadow-sm border mb-6"
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            whileHover={{ y: -2 }}
+            className="rounded-2xl p-4 sm:p-6 shadow-md border mb-6 backdrop-blur-md"
             style={{
-              backgroundColor: "var(--color-surface)",
+              backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
               borderColor: "var(--color-accent-light)",
             }}
           >
@@ -136,13 +148,18 @@ const Settings = () => {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Security Settings */}
-          <div
-            className="rounded-xl p-4 sm:p-6 shadow-sm border mb-6"
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            whileHover={{ y: -2 }}
+            className="rounded-2xl p-4 sm:p-6 shadow-md border mb-6 backdrop-blur-md"
             style={{
-              backgroundColor: "var(--color-surface)",
+              backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
               borderColor: "var(--color-accent-light)",
             }}
           >
@@ -298,13 +315,18 @@ const Settings = () => {
                 <li>Include numbers and special characters (recommended)</li>
               </ul>
             </div>
-          </div>
+          </motion.div>
 
           {/* Appearance Settings */}
-          <div
-            className="rounded-xl p-4 sm:p-6 shadow-sm border mb-6"
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            whileHover={{ y: -2 }}
+            className="rounded-2xl p-4 sm:p-6 shadow-md border mb-6 backdrop-blur-md"
             style={{
-              backgroundColor: "var(--color-surface)",
+              backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
               borderColor: "var(--color-accent-light)",
             }}
           >
@@ -361,13 +383,18 @@ const Settings = () => {
                 </motion.div>
               </button>
             </div>
-          </div>
+          </motion.div>
 
           {/* Notification Settings */}
-          <div
-            className="rounded-xl p-4 sm:p-6 shadow-sm border mb-6"
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            whileHover={{ y: -2 }}
+            className="rounded-2xl p-4 sm:p-6 shadow-md border mb-6 backdrop-blur-md"
             style={{
-              backgroundColor: "var(--color-surface)",
+              backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
               borderColor: "var(--color-accent-light)",
             }}
           >
@@ -460,7 +487,7 @@ const Settings = () => {
                 />
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Danger Zone */}
           <div

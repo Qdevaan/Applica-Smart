@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { Briefcase, TrendingUp, Clock, CheckCircle } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { jobApplicationService } from "../services/jobApplication.service";
+import AnimatedNumber from "../components/ui/AnimatedNumber";
 
 interface AppStats {
   total: number;
@@ -24,12 +25,19 @@ const Dashboard = () => {
     });
   }, [user?.id]);
 
-  const responseRate =
+  const responseRatePct =
     stats && stats.total > 0
-      ? `${Math.round(((stats.interview + stats.accepted) / stats.total) * 100)}%`
-      : "—";
+      ? Math.round(((stats.interview + stats.accepted) / stats.total) * 100)
+      : null;
 
-  const statCards = [
+  const statCards: Array<{
+    label: string;
+    value: number | string;
+    suffix?: string;
+    icon: typeof Briefcase;
+    color: string;
+    bgColor: string;
+  }> = [
     {
       label: "Applications Sent",
       value: stats?.total ?? "—",
@@ -39,7 +47,8 @@ const Dashboard = () => {
     },
     {
       label: "Response Rate",
-      value: responseRate,
+      value: responseRatePct ?? "—",
+      suffix: responseRatePct !== null ? "%" : "",
       icon: TrendingUp,
       color: "text-green-600",
       bgColor: "bg-green-100",
@@ -91,26 +100,30 @@ const Dashboard = () => {
               return (
                 <motion.div
                   key={stat.label}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                  whileHover={{ y: -4, scale: 1.02 }}
-                  className="rounded-2xl p-4 sm:p-6 shadow-md border backdrop-blur-md hover:shadow-xl transition-shadow"
+                  initial={{ opacity: 0, y: 24, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                  whileHover={{ y: -6, scale: 1.03, transition: { duration: 0.2 } }}
+                  className="group rounded-2xl p-4 sm:p-6 shadow-md border backdrop-blur-md hover:shadow-2xl transition-shadow relative overflow-hidden"
                   style={{
                     backgroundColor: "color-mix(in srgb, var(--color-surface) 85%, transparent)",
                     borderColor: "var(--color-accent-light)",
                   }}
                 >
                   <div className="flex items-center justify-between mb-3 sm:mb-4">
-                    <div className={`p-2 sm:p-3 rounded-lg ${stat.bgColor}`}>
+                    <motion.div
+                      whileHover={{ rotate: -8, scale: 1.15 }}
+                      transition={{ type: "spring", stiffness: 380, damping: 20 }}
+                      className={`p-2 sm:p-3 rounded-lg ${stat.bgColor}`}
+                    >
                       <Icon className={`w-5 h-5 sm:w-6 sm:h-6 ${stat.color}`} />
-                    </div>
+                    </motion.div>
                   </div>
                   <h3
                     className="text-2xl sm:text-3xl font-bold mb-1"
                     style={{ color: "var(--color-text-main)" }}
                   >
-                    {stat.value}
+                    <AnimatedNumber value={stat.value} suffix={stat.suffix ?? ""} />
                   </h3>
                   <p
                     className="text-xs sm:text-sm"

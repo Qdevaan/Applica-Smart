@@ -44,46 +44,68 @@ const DashboardNavbar = () => {
   const isActiveRoute = (path: string) => location.pathname === path;
 
   return (
-    <nav
-      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-md shadow-sm"
+    <motion.nav
+      initial={{ y: -64, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl shadow-sm"
       style={{
-        backgroundColor: "var(--color-surface)",
-        borderBottom: "1px solid var(--color-accent)",
+        backgroundColor: "color-mix(in srgb, var(--color-surface) 75%, transparent)",
+        borderBottom: "1px solid var(--color-accent-light)",
       }}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link
-            to="/dashboard"
-            className="flex items-center gap-2 text-xl font-bold transition-colors"
-            style={{ color: "var(--color-primary)" }}
-          >
-            {APP_NAME}
-          </Link>
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/dashboard"
+              className="flex items-center gap-2 text-xl font-bold"
+            >
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#780000] to-[#C1121F]">
+                {APP_NAME}
+              </span>
+            </Link>
+          </motion.div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
-            {navLinks.map((link) => {
+            {navLinks.map((link, index) => {
               const Icon = link.icon;
               const isActive = isActiveRoute(link.href);
               return (
-                <Link
+                <motion.div
                   key={link.href}
-                  to={link.href}
-                  className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors"
-                  style={{
-                    backgroundColor: isActive
-                      ? "var(--color-accent-light)"
-                      : "transparent",
-                    color: isActive
-                      ? "var(--color-primary)"
-                      : "var(--color-text-main)",
-                  }}
+                  initial={{ y: -16, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ duration: 0.35, delay: 0.15 + index * 0.05 }}
+                  whileHover={{ y: -2 }}
+                  className="relative"
                 >
-                  <Icon className="w-4 h-4" />
-                  {link.label}
-                </Link>
+                  <Link
+                    to={link.href}
+                    className="relative flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors"
+                    style={{
+                      color: isActive ? "var(--color-primary)" : "var(--color-text-main)",
+                    }}
+                  >
+                    {isActive && (
+                      <motion.span
+                        layoutId="nav-active-indicator"
+                        className="absolute inset-0 rounded-lg"
+                        style={{
+                          backgroundColor: "var(--color-accent-light)",
+                          boxShadow: "0 4px 16px -8px rgba(120, 0, 0, 0.4)",
+                        }}
+                        transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      />
+                    )}
+                    <span className="relative z-10 flex items-center gap-2">
+                      <Icon className="w-4 h-4" />
+                      {link.label}
+                    </span>
+                  </Link>
+                </motion.div>
               );
             })}
           </div>
@@ -91,42 +113,49 @@ const DashboardNavbar = () => {
           {/* Right Section */}
           <div className="hidden md:flex items-center gap-3">
             {/* Notifications */}
-            <button
+            <motion.button
+              whileHover={{ scale: 1.1, rotate: -10 }}
+              whileTap={{ scale: 0.92 }}
               className="relative p-2 rounded-lg transition-colors"
               style={{ color: "var(--color-text-main)" }}
             >
               <Bell className="w-5 h-5" />
-              <span
+              <motion.span
+                animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
+                transition={{ duration: 2, repeat: Infinity }}
                 className="absolute top-1 right-1 w-2 h-2 rounded-full"
                 style={{ backgroundColor: "var(--color-primary-hover)" }}
-              ></span>
-            </button>
+              />
+            </motion.button>
 
             {/* Profile Dropdown */}
             <div className="relative">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-2 p-2 rounded-lg transition-colors"
                 style={{ color: "var(--color-text-main)" }}
               >
                 <User className="w-5 h-5" />
-              </button>
+              </motion.button>
 
               <AnimatePresence>
                 {isProfileOpen && (
                   <motion.div
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    className="absolute right-0 mt-2 w-48 rounded-lg shadow-lg py-2"
+                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-2 backdrop-blur-md"
                     style={{
-                      backgroundColor: "var(--color-surface)",
-                      border: "1px solid var(--color-accent)",
+                      backgroundColor: "color-mix(in srgb, var(--color-surface) 92%, transparent)",
+                      border: "1px solid var(--color-accent-light)",
                     }}
                   >
                     <Link
                       to="/profile"
-                      className="flex items-center gap-2 px-4 py-2 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 transition-colors hover:bg-black/5"
                       style={{ color: "var(--color-text-main)" }}
                       onClick={() => setIsProfileOpen(false)}
                     >
@@ -135,20 +164,17 @@ const DashboardNavbar = () => {
                     </Link>
                     <Link
                       to="/settings"
-                      className="flex items-center gap-2 px-4 py-2 transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 transition-colors hover:bg-black/5"
                       style={{ color: "var(--color-text-main)" }}
                       onClick={() => setIsProfileOpen(false)}
                     >
                       <Settings className="w-4 h-4" />
                       Settings
                     </Link>
-                    <hr
-                      className="my-2"
-                      style={{ borderColor: "var(--color-accent)" }}
-                    />
+                    <hr className="my-2" style={{ borderColor: "var(--color-accent-light)" }} />
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 px-4 py-2 w-full text-left transition-colors"
+                      className="flex items-center gap-2 px-4 py-2 w-full text-left transition-colors hover:bg-black/5"
                       style={{ color: "var(--color-primary)" }}
                     >
                       <LogOut className="w-4 h-4" />
@@ -161,17 +187,36 @@ const DashboardNavbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <button
+          <motion.button
+            whileTap={{ scale: 0.9 }}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="md:hidden p-2 rounded-lg transition-colors"
             style={{ color: "var(--color-text-main)" }}
           >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6" />
-            ) : (
-              <Menu className="w-6 h-6" />
-            )}
-          </button>
+            <AnimatePresence mode="wait">
+              {isMobileMenuOpen ? (
+                <motion.div
+                  key="x"
+                  initial={{ rotate: -90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: 90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <X className="w-6 h-6" />
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="menu"
+                  initial={{ rotate: 90, opacity: 0 }}
+                  animate={{ rotate: 0, opacity: 1 }}
+                  exit={{ rotate: -90, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <Menu className="w-6 h-6" />
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </motion.button>
         </div>
       </div>
 
@@ -184,36 +229,42 @@ const DashboardNavbar = () => {
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden"
             style={{
-              backgroundColor: "var(--color-surface)",
-              borderTop: "1px solid var(--color-accent)",
+              backgroundColor: "color-mix(in srgb, var(--color-surface) 92%, transparent)",
+              borderTop: "1px solid var(--color-accent-light)",
             }}
           >
             <div className="px-4 py-4 space-y-2">
-              {navLinks.map((link) => {
+              {navLinks.map((link, index) => {
                 const Icon = link.icon;
                 const isActive = isActiveRoute(link.href);
                 return (
-                  <Link
+                  <motion.div
                     key={link.href}
-                    to={link.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
-                    style={{
-                      backgroundColor: isActive
-                        ? "var(--color-accent-light)"
-                        : "transparent",
-                      color: isActive
-                        ? "var(--color-primary)"
-                        : "var(--color-text-main)",
-                    }}
+                    initial={{ x: -24, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: index * 0.05 }}
                   >
-                    <Icon className="w-5 h-5" />
-                    {link.label}
-                  </Link>
+                    <Link
+                      to={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
+                      style={{
+                        backgroundColor: isActive
+                          ? "var(--color-accent-light)"
+                          : "transparent",
+                        color: isActive
+                          ? "var(--color-primary)"
+                          : "var(--color-text-main)",
+                      }}
+                    >
+                      <Icon className="w-5 h-5" />
+                      {link.label}
+                    </Link>
+                  </motion.div>
                 );
               })}
 
-              <hr style={{ borderColor: "var(--color-accent)" }} className="my-2" />
+              <hr style={{ borderColor: "var(--color-accent-light)" }} className="my-2" />
 
               <Link
                 to="/profile"
@@ -237,7 +288,7 @@ const DashboardNavbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </motion.nav>
   );
 };
 

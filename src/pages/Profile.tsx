@@ -206,8 +206,15 @@ const Profile = () => {
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
       <div className="max-w-4xl mx-auto">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
+          initial="hidden"
+          animate="visible"
+          variants={{
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.1, delayChildren: 0.05 },
+            },
+          }}
         >
           <h1
             className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 md:mb-8"
@@ -220,10 +227,14 @@ const Profile = () => {
           </h1>
 
           {/* Basic Info Card */}
-          <div
-            className="rounded-xl p-4 sm:p-6 shadow-sm border mb-6"
+          <motion.div
+            variants={{
+              hidden: { opacity: 0, y: 24 },
+              visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+            }}
+            className="rounded-2xl p-4 sm:p-6 shadow-md border mb-6 backdrop-blur-md"
             style={{
-              backgroundColor: "var(--color-surface)",
+              backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
               borderColor: "var(--color-accent-light)",
             }}
           >
@@ -443,10 +454,14 @@ const SkillsSection = ({
   onAdd,
   onRemove,
 }: any) => (
-  <div
-    className="rounded-xl p-6 shadow-sm border mb-6"
+  <motion.div
+    variants={{
+      hidden: { opacity: 0, y: 24 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+    }}
+    className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
     style={{
-      backgroundColor: "var(--color-surface)",
+      backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
       borderColor: "var(--color-accent-light)",
     }}
   >
@@ -490,7 +505,7 @@ const SkillsSection = ({
         <p style={{ color: "var(--color-text-muted)" }}>No skills added yet</p>
       )}
     </div>
-  </div>
+  </motion.div>
 );
 
 // Hobbies Section Component
@@ -501,10 +516,14 @@ const HobbiesSection = ({
   onAdd,
   onRemove,
 }: any) => (
-  <div
-    className="rounded-xl p-6 shadow-sm border mb-6"
+  <motion.div
+    variants={{
+      hidden: { opacity: 0, y: 24 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+    }}
+    className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
     style={{
-      backgroundColor: "var(--color-surface)",
+      backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
       borderColor: "var(--color-accent-light)",
     }}
   >
@@ -548,7 +567,7 @@ const HobbiesSection = ({
         <p style={{ color: "var(--color-text-muted)" }}>No hobbies added yet</p>
       )}
     </div>
-  </div>
+  </motion.div>
 );
 
 // Education Section Component
@@ -573,10 +592,14 @@ const EducationSection = ({
   onUpdate,
   onDelete,
 }: EducationSectionProps) => (
-  <div
-    className="rounded-xl p-6 shadow-sm border mb-6"
+  <motion.div
+    variants={{
+      hidden: { opacity: 0, y: 24 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+    }}
+    className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
     style={{
-      backgroundColor: "var(--color-surface)",
+      backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
       borderColor: "var(--color-accent-light)",
     }}
   >
@@ -627,7 +650,7 @@ const EducationSection = ({
         </p>
       )}
     </div>
-  </div>
+  </motion.div>
 );
 
 // Experience Section Component
@@ -652,10 +675,14 @@ const ExperienceSection = ({
   onUpdate,
   onDelete,
 }: ExperienceSectionProps) => (
-  <div
-    className="rounded-xl p-6 shadow-sm border mb-6"
+  <motion.div
+    variants={{
+      hidden: { opacity: 0, y: 24 },
+      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+    }}
+    className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
     style={{
-      backgroundColor: "var(--color-surface)",
+      backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
       borderColor: "var(--color-accent-light)",
     }}
   >
@@ -706,7 +733,7 @@ const ExperienceSection = ({
         </p>
       )}
     </div>
-  </div>
+  </motion.div>
 );
 
 // Education Form Component
