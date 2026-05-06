@@ -32,9 +32,7 @@ const DashboardNavbar = () => {
   const handleLogout = async () => {
     try {
       await signOut();
-      setTimeout(() => {
-        navigate("/login", { replace: true });
-      }, 100);
+      navigate("/login", { replace: true });
     } catch (error) {
       console.error("Logout error:", error);
       navigate("/login", { replace: true });

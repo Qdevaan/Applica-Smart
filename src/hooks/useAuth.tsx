@@ -22,120 +22,48 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const refreshProfile = async () => {
-    if (!user?.id) {
-      console.warn("Cannot refresh profile: no user ID");
-      return;
-    }
+  const fetchProfile = (userId: string, mounted: { current: boolean }) => {
+    profileService.getProfile(userId).then(({ data, error }) => {
+      if (error) console.error("Profile fetch error:", error);
+      if (mounted.current && data) setProfile(data);
+    });
+  };
 
-    try {
-      const { data, error } = await profileService.getProfile(user.id);
-      if (error) {
-        console.error("Error refreshing profile:", error);
-        return;
-      }
-      if (data) {
-        setProfile(data);
-      }
-    } catch (error) {
-      console.error("Failed to refresh profile:", error);
-    }
+  const refreshProfile = async () => {
+    if (!user?.id) return;
+    const { data, error } = await profileService.getProfile(user.id);
+    if (error) console.error("Profile refresh error:", error);
+    if (data) setProfile(data);
   };
 
   useEffect(() => {
-    let mounted = true;
+    const mounted = { current: true };
 
-    // Get initial session
-    const initializeAuth = async () => {
-      try {
-        console.log("🔐 Initializing auth...");
-        const {
-          data: { session },
-          error,
-        } = await supabase.auth.getSession();
-
-        if (!mounted) return;
-
-        if (error) {
-          console.error("❌ Error getting session:", error);
-          setLoading(false);
-          return;
-        }
-
-        console.log(
-          "✅ Session retrieved:",
-          session?.user?.email || "No session"
-        );
-        setSession(session);
-        setUser(session?.user ?? null);
-
-        if (session?.user) {
-          // Fetch profile data (non-blocking)
-          console.log("📋 Fetching profile for user:", session.user.id);
-          profileService
-            .getProfile(session.user.id)
-            .then(({ data: profileData, error: profileError }) => {
-              if (profileError) {
-                console.warn("⚠️ Profile fetch error:", profileError);
-              }
-              if (mounted && profileData) {
-                console.log("✅ Profile loaded:", profileData.email);
-                setProfile(profileData);
-              }
-            })
-            .catch((err) => {
-              console.error("❌ Profile fetch failed:", err);
-            });
-        }
-      } catch (error) {
-        console.error("❌ Auth initialization error:", error);
-      } finally {
-        if (mounted) {
-          console.log(
-            "✅ Auth initialization complete, setting loading to false"
-          );
-          setLoading(false);
-        }
-      }
-    };
-
-    initializeAuth();
-
-    // Listen for auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      console.log("🔄 Auth state changed:", event, session?.user?.email);
-
-      if (!mounted) return;
-
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      if (!mounted.current) return;
+      if (error) { setLoading(false); return; }
       setSession(session);
       setUser(session?.user ?? null);
+      if (session?.user) fetchProfile(session.user.id, mounted);
+      setLoading(false);
+    });
 
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted.current) return;
+      // INITIAL_SESSION is handled by getSession above — skip to avoid double fetch
+      if (event === "INITIAL_SESSION") return;
+      setSession(session);
+      setUser(session?.user ?? null);
       if (session?.user) {
-        // Fetch profile data on auth change (non-blocking)
-        profileService
-          .getProfile(session.user.id)
-          .then(({ data }) => {
-            if (mounted && data) {
-              console.log("✅ Profile loaded on auth change:", data.email);
-              setProfile(data);
-            }
-          })
-          .catch((err) => {
-            console.error("❌ Profile fetch failed on auth change:", err);
-          });
+        fetchProfile(session.user.id, mounted);
       } else {
         setProfile(null);
       }
-
-      // CRITICAL: Always set loading to false after auth state change
-      console.log("✅ Setting loading to FALSE after auth state change");
       setLoading(false);
     });
 
     return () => {
-      mounted = false;
+      mounted.current = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -147,22 +75,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setProfile(null);
   };
 
-  const value = {
-    user,
-    session,
-    profile,
-    loading,
-    signOut,
-    refreshProfile,
-  };
-
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={{ user, session, profile, loading, signOut, refreshProfile }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (context === undefined) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };
