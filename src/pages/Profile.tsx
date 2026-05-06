@@ -12,12 +12,90 @@ import {
   Trash2,
   Save,
   X,
+  Sparkles,
 } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { profileService } from "../services/profile.service";
 import Button from "../components/ui/Button";
 import Input from "../components/ui/Input";
 import type { Education, Experience } from "../lib/supabase";
+
+// Common-skills catalogue grouped by domain. Click a chip to add it.
+const SKILL_SUGGESTIONS: Record<string, string[]> = {
+  "Software & Engineering": [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Node.js",
+    "Python",
+    "SQL",
+    "Git",
+    "REST APIs",
+    "Docker",
+    "AWS",
+  ],
+  "Data & AI": [
+    "Pandas",
+    "NumPy",
+    "TensorFlow",
+    "PyTorch",
+    "scikit-learn",
+    "Power BI",
+    "Tableau",
+    "Excel",
+    "Statistics",
+  ],
+  "Design & Product": [
+    "Figma",
+    "UI Design",
+    "UX Research",
+    "Prototyping",
+    "Wireframing",
+    "Design Systems",
+    "Adobe XD",
+  ],
+  "Business & Soft Skills": [
+    "Communication",
+    "Teamwork",
+    "Leadership",
+    "Problem Solving",
+    "Time Management",
+    "Project Management",
+    "Critical Thinking",
+    "Adaptability",
+  ],
+  Marketing: [
+    "SEO",
+    "Content Writing",
+    "Social Media",
+    "Google Ads",
+    "Email Marketing",
+    "Copywriting",
+  ],
+};
+
+const HOBBY_SUGGESTIONS = [
+  "Reading",
+  "Writing",
+  "Photography",
+  "Travel",
+  "Cooking",
+  "Hiking",
+  "Music",
+  "Gaming",
+  "Cycling",
+  "Painting",
+  "Yoga",
+  "Open Source",
+  "Volunteering",
+  "Chess",
+  "Football",
+  "Cricket",
+  "Running",
+  "Gardening",
+  "Blogging",
+  "Tech Meetups",
+];
 
 const Profile = () => {
   const { user, profile, refreshProfile } = useAuth();
@@ -104,6 +182,15 @@ const Profile = () => {
     await refreshProfile();
   };
 
+  const handleAddSuggestedSkill = async (skill: string) => {
+    if (!user) return;
+    if (skills.some((s) => s.toLowerCase() === skill.toLowerCase())) return;
+    const updatedSkills = [...skills, skill];
+    setSkills(updatedSkills);
+    await profileService.updateSkills(user.id, updatedSkills);
+    await refreshProfile();
+  };
+
   const handleRemoveSkill = async (index: number) => {
     if (!user) return;
     const updatedSkills = skills.filter((_, i) => i !== index);
@@ -119,6 +206,15 @@ const Profile = () => {
     setHobbies(updatedHobbies);
     setNewHobby("");
 
+    await profileService.updateHobbies(user.id, updatedHobbies);
+    await refreshProfile();
+  };
+
+  const handleAddSuggestedHobby = async (hobby: string) => {
+    if (!user) return;
+    if (hobbies.some((h) => h.toLowerCase() === hobby.toLowerCase())) return;
+    const updatedHobbies = [...hobbies, hobby];
+    setHobbies(updatedHobbies);
     await profileService.updateHobbies(user.id, updatedHobbies);
     await refreshProfile();
   };
@@ -397,7 +493,7 @@ const Profile = () => {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Skills Card */}
           <SkillsSection
@@ -406,6 +502,7 @@ const Profile = () => {
             setNewSkill={setNewSkill}
             onAdd={handleAddSkill}
             onRemove={handleRemoveSkill}
+            onAddSuggested={handleAddSuggestedSkill}
           />
 
           {/* Hobbies Card */}
@@ -415,6 +512,7 @@ const Profile = () => {
             setNewHobby={setNewHobby}
             onAdd={handleAddHobby}
             onRemove={handleRemoveHobby}
+            onAddSuggested={handleAddSuggestedHobby}
           />
 
           {/* Education Card */}
@@ -453,60 +551,134 @@ const SkillsSection = ({
   setNewSkill,
   onAdd,
   onRemove,
-}: any) => (
-  <motion.div
-    variants={{
-      hidden: { opacity: 0, y: 24 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-    }}
-    className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
-    style={{
-      backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
-      borderColor: "var(--color-accent-light)",
-    }}
-  >
-    <h2
-      className="text-2xl font-bold mb-4"
-      style={{ color: "var(--color-text-main)" }}
+  onAddSuggested,
+}: any) => {
+  const [activeCat, setActiveCat] = useState<string>(
+    Object.keys(SKILL_SUGGESTIONS)[0]
+  );
+  const userSkillSet = new Set(
+    (skills as string[]).map((s) => s.toLowerCase())
+  );
+
+  return (
+    <motion.div
+      variants={{
+        hidden: { opacity: 0, y: 24 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+      }}
+      className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
+        borderColor: "var(--color-accent-light)",
+      }}
     >
-      Skills
-    </h2>
+      <h2
+        className="text-2xl font-bold mb-4"
+        style={{ color: "var(--color-text-main)" }}
+      >
+        Skills
+      </h2>
 
-    <div className="flex gap-2 mb-4">
-      <Input
-        value={newSkill}
-        onChange={(e) => setNewSkill(e.target.value)}
-        placeholder="Add a skill"
-        onKeyPress={(e) => e.key === "Enter" && onAdd()}
-      />
-      <Button onClick={onAdd} size="sm">
-        <Plus className="w-4 h-4" />
-      </Button>
-    </div>
+      <div className="flex gap-2 mb-4">
+        <Input
+          value={newSkill}
+          onChange={(e) => setNewSkill(e.target.value)}
+          placeholder="Add a skill"
+          onKeyPress={(e) => e.key === "Enter" && onAdd()}
+        />
+        <Button onClick={onAdd} size="sm">
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
 
-    <div className="flex flex-wrap gap-2">
-      {skills.map((skill: string, index: number) => (
-        <motion.div
-          key={index}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="px-3 py-1 bg-[#780000]/10 text-[#780000] dark:bg-[#780000]/20 dark:text-[#C1121F] rounded-full text-sm font-medium flex items-center gap-2"
-        >
-          {skill}
-          <button
-            onClick={() => onRemove(index)}
-            className="hover:text-[#C1121F] transition-colors"
+      <div className="flex flex-wrap gap-2 mb-4">
+        {skills.map((skill: string, index: number) => (
+          <motion.div
+            key={index}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="px-3 py-1 bg-[#780000]/10 text-[#780000] dark:bg-[#780000]/20 dark:text-[#C1121F] rounded-full text-sm font-medium flex items-center gap-2"
           >
-            <X className="w-3 h-3" />
-          </button>
-        </motion.div>
-      ))}
-      {skills.length === 0 && (
-        <p style={{ color: "var(--color-text-muted)" }}>No skills added yet</p>
-      )}
-    </div>
-  </motion.div>
-);
+            {skill}
+            <button
+              onClick={() => onRemove(index)}
+              className="hover:text-[#C1121F] transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </motion.div>
+        ))}
+        {skills.length === 0 && (
+          <p style={{ color: "var(--color-text-muted)" }}>No skills added yet</p>
+        )}
+      </div>
+
+      {/* Suggestions */}
+      <div
+        className="rounded-xl p-4 border border-dashed"
+        style={{ borderColor: "var(--color-accent-light)" }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <Sparkles
+            className="w-4 h-4"
+            style={{ color: "var(--color-primary)" }}
+          />
+          <p
+            className="text-sm font-semibold"
+            style={{ color: "var(--color-text-main)" }}
+          >
+            Common skills — tap to add
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2 mb-3">
+          {Object.keys(SKILL_SUGGESTIONS).map((cat) => (
+            <button
+              key={cat}
+              onClick={() => setActiveCat(cat)}
+              className="text-xs font-semibold px-3 py-1 rounded-full transition-all"
+              style={{
+                backgroundColor:
+                  activeCat === cat
+                    ? "var(--color-primary)"
+                    : "var(--color-accent-light)",
+                color: activeCat === cat ? "white" : "var(--color-primary)",
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {SKILL_SUGGESTIONS[activeCat].map((s) => {
+            const added = userSkillSet.has(s.toLowerCase());
+            return (
+              <button
+                key={s}
+                disabled={added}
+                onClick={() => onAddSuggested(s)}
+                className={`text-sm px-3 py-1 rounded-full transition-all flex items-center gap-1 ${
+                  added ? "opacity-50 cursor-not-allowed" : "hover:shadow-md"
+                }`}
+                style={{
+                  backgroundColor: added
+                    ? "var(--color-accent-light)"
+                    : "var(--color-surface)",
+                  color: "var(--color-text-body)",
+                  border: "1px solid var(--color-accent-light)",
+                }}
+              >
+                {!added && <Plus className="w-3 h-3" />}
+                {s}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 // Hobbies Section Component
 const HobbiesSection = ({
@@ -515,60 +687,111 @@ const HobbiesSection = ({
   setNewHobby,
   onAdd,
   onRemove,
-}: any) => (
-  <motion.div
-    variants={{
-      hidden: { opacity: 0, y: 24 },
-      visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-    }}
-    className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
-    style={{
-      backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
-      borderColor: "var(--color-accent-light)",
-    }}
-  >
-    <h2
-      className="text-2xl font-bold mb-4"
-      style={{ color: "var(--color-text-main)" }}
+  onAddSuggested,
+}: any) => {
+  const userHobbySet = new Set(
+    (hobbies as string[]).map((h) => h.toLowerCase())
+  );
+
+  return (
+    <motion.div
+      variants={{
+        hidden: { opacity: 0, y: 24 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+      }}
+      className="rounded-2xl p-6 shadow-md border mb-6 backdrop-blur-md"
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
+        borderColor: "var(--color-accent-light)",
+      }}
     >
-      Hobbies
-    </h2>
+      <h2
+        className="text-2xl font-bold mb-4"
+        style={{ color: "var(--color-text-main)" }}
+      >
+        Hobbies
+      </h2>
 
-    <div className="flex gap-2 mb-4">
-      <Input
-        value={newHobby}
-        onChange={(e) => setNewHobby(e.target.value)}
-        placeholder="Add a hobby"
-        onKeyPress={(e) => e.key === "Enter" && onAdd()}
-      />
-      <Button onClick={onAdd} size="sm">
-        <Plus className="w-4 h-4" />
-      </Button>
-    </div>
+      <div className="flex gap-2 mb-4">
+        <Input
+          value={newHobby}
+          onChange={(e) => setNewHobby(e.target.value)}
+          placeholder="Add a hobby"
+          onKeyPress={(e) => e.key === "Enter" && onAdd()}
+        />
+        <Button onClick={onAdd} size="sm">
+          <Plus className="w-4 h-4" />
+        </Button>
+      </div>
 
-    <div className="flex flex-wrap gap-2">
-      {hobbies.map((hobby: string, index: number) => (
-        <motion.div
-          key={index}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          className="px-3 py-1 bg-[#669BBC]/10 text-[#669BBC] dark:bg-[#669BBC]/20 rounded-full text-sm font-medium flex items-center gap-2"
-        >
-          {hobby}
-          <button
-            onClick={() => onRemove(index)}
-            className="hover:text-[#003049] transition-colors"
+      <div className="flex flex-wrap gap-2 mb-4">
+        {hobbies.map((hobby: string, index: number) => (
+          <motion.div
+            key={index}
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            className="px-3 py-1 bg-[#669BBC]/10 text-[#669BBC] dark:bg-[#669BBC]/20 rounded-full text-sm font-medium flex items-center gap-2"
           >
-            <X className="w-3 h-3" />
-          </button>
-        </motion.div>
-      ))}
-      {hobbies.length === 0 && (
-        <p style={{ color: "var(--color-text-muted)" }}>No hobbies added yet</p>
-      )}
-    </div>
-  </motion.div>
-);
+            {hobby}
+            <button
+              onClick={() => onRemove(index)}
+              className="hover:text-[#003049] transition-colors"
+            >
+              <X className="w-3 h-3" />
+            </button>
+          </motion.div>
+        ))}
+        {hobbies.length === 0 && (
+          <p style={{ color: "var(--color-text-muted)" }}>No hobbies added yet</p>
+        )}
+      </div>
+
+      <div
+        className="rounded-xl p-4 border border-dashed"
+        style={{ borderColor: "var(--color-accent-light)" }}
+      >
+        <div className="flex items-center gap-2 mb-3">
+          <Sparkles
+            className="w-4 h-4"
+            style={{ color: "var(--color-primary)" }}
+          />
+          <p
+            className="text-sm font-semibold"
+            style={{ color: "var(--color-text-main)" }}
+          >
+            Common hobbies — tap to add
+          </p>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
+          {HOBBY_SUGGESTIONS.map((h) => {
+            const added = userHobbySet.has(h.toLowerCase());
+            return (
+              <button
+                key={h}
+                disabled={added}
+                onClick={() => onAddSuggested(h)}
+                className={`text-sm px-3 py-1 rounded-full transition-all flex items-center gap-1 ${
+                  added ? "opacity-50 cursor-not-allowed" : "hover:shadow-md"
+                }`}
+                style={{
+                  backgroundColor: added
+                    ? "var(--color-accent-light)"
+                    : "var(--color-surface)",
+                  color: "var(--color-text-body)",
+                  border: "1px solid var(--color-accent-light)",
+                }}
+              >
+                {!added && <Plus className="w-3 h-3" />}
+                {h}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 // Education Section Component
 type EducationSectionProps = {

@@ -12,12 +12,34 @@ export type CVTemplate =
   | "ats"
   | "compact";
 
+export type TemplateCategory =
+  | "all"
+  | "modern"
+  | "traditional"
+  | "creative"
+  | "executive"
+  | "ats"
+  | "compact";
+
 export interface CVTemplateOption {
   id: CVTemplate;
   name: string;
   description: string;
   preview: string;
+  category: Exclude<TemplateCategory, "all">;
+  bestFor: string[];
+  accentColor: string;
 }
+
+export const templateCategories: { id: TemplateCategory; label: string }[] = [
+  { id: "all", label: "All" },
+  { id: "modern", label: "Modern" },
+  { id: "traditional", label: "Traditional" },
+  { id: "creative", label: "Creative" },
+  { id: "executive", label: "Executive" },
+  { id: "ats", label: "ATS-Friendly" },
+  { id: "compact", label: "Compact" },
+];
 
 export const availableTemplates: CVTemplateOption[] = [
   {
@@ -25,42 +47,63 @@ export const availableTemplates: CVTemplateOption[] = [
     name: "Modern Professional",
     description: "Clean and contemporary design with color accents",
     preview: "/templates/modern-preview.png",
+    category: "modern",
+    bestFor: ["Software", "Product", "Marketing"],
+    accentColor: "#1e3a5f",
   },
   {
     id: "classic",
     name: "Classic Traditional",
     description: "Timeless and formal layout for traditional industries",
     preview: "/templates/classic-preview.png",
+    category: "traditional",
+    bestFor: ["Finance", "Law", "Academia"],
+    accentColor: "#111827",
   },
   {
     id: "minimal",
     name: "Minimal Clean",
     description: "Simple and elegant design with maximum readability",
     preview: "/templates/minimal-preview.png",
+    category: "modern",
+    bestFor: ["Design", "Writing", "Consulting"],
+    accentColor: "#374151",
   },
   {
     id: "executive",
     name: "Executive",
     description: "Formal navy & gold layout for senior roles and traditional industries",
     preview: "/templates/executive-preview.png",
+    category: "executive",
+    bestFor: ["Senior leadership", "Banking", "Operations"],
+    accentColor: "#1e3a8a",
   },
   {
     id: "creative",
     name: "Creative",
     description: "Vibrant accent palette for design, marketing, and product roles",
     preview: "/templates/creative-preview.png",
+    category: "creative",
+    bestFor: ["Design", "Marketing", "Media"],
+    accentColor: "#C1121F",
   },
   {
     id: "ats",
     name: "ATS-Optimized",
     description: "Plain single-column layout designed to pass automated resume screeners",
     preview: "/templates/ats-preview.png",
+    category: "ats",
+    bestFor: ["High-volume applications", "Large companies"],
+    accentColor: "#000000",
   },
   {
     id: "compact",
     name: "Compact",
     description: "Two-column dense layout that fits a strong career on a single page",
     preview: "/templates/compact-preview.png",
+    category: "compact",
+    bestFor: ["Senior IC", "Long careers", "One-page mandates"],
+    accentColor: "#780000",
   },
 ];
 
