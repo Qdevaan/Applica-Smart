@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import Card from "../ui/Card";
 
 interface AuthFormWrapperProps {
   children: ReactNode;

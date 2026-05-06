@@ -44,7 +44,7 @@ const SignUpForm = () => {
     >
       {error && <FormError message={error} />}
 
-      <SignUpFields register={register} errors={errors} password={password} />
+      <SignUpFields register={register} errors={errors} />
 
       {password && <PasswordStrengthBar password={password} />}
 

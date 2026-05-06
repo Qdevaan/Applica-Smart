@@ -57,7 +57,7 @@ const FeaturesSection = () => {
           variants={staggerContainer}
           className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {FEATURES.map((feature, index) => (
+          {FEATURES.map((feature) => (
             <motion.div
               key={feature.id}
               variants={scaleIn}

@@ -3,7 +3,7 @@ import { authService } from "../../services/auth.service";
 import { useState } from "react";
 
 const SocialAuthButtons = () => {
-  const [isLoading, setIsLoading] = useState<string | null>(null);
+  const [, setIsLoading] = useState<string | null>(null);
 
   const handleGoogleLogin = async () => {
     setIsLoading("google");

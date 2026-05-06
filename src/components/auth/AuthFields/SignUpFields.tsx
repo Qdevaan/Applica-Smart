@@ -1,15 +1,13 @@
 import Input from "../../ui/Input";
 import type { UseFormRegister, FieldErrors } from "react-hook-form";
 import type { SignupFormData } from "../../../utils/validators/signupSchema";
-import PasswordStrengthBar from "../PasswordStrengthBar";
 
 interface SignUpFieldsProps {
   register: UseFormRegister<SignupFormData>;
   errors: FieldErrors<SignupFormData>;
-  password: string;
 }
 
-const SignUpFields = ({ register, errors, password }: SignUpFieldsProps) => {
+const SignUpFields = ({ register, errors }: SignUpFieldsProps) => {
   return (
     <div className="space-y-4">
       <Input
