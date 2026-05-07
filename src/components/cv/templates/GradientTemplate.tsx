@@ -11,6 +11,7 @@ import {
   Rect,
 } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const styles = StyleSheet.create({
   page: { backgroundColor: "#ffffff", fontFamily: "Helvetica", color: "#0f172a" },
@@ -141,6 +142,8 @@ export const GradientTemplate = ({ profile }: Props) => (
             ))}
           </>
         )}
+
+        <ExtraSections profile={profile} accent="#4f46e5" skip={["links"]} />
       </View>
     </Page>
   </Document>

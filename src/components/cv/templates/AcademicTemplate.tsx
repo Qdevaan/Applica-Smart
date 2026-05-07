@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const styles = StyleSheet.create({
   page: { fontFamily: "Times-Roman", color: "#000000", backgroundColor: "#ffffff", paddingHorizontal: 56, paddingVertical: 48 },
@@ -131,6 +132,12 @@ export const AcademicTemplate = ({ profile }: Props) => (
           </Text>
         </>
       )}
+
+      <ExtraSections
+        profile={profile}
+        accent="#000000"
+        skip={["awards", "certifications", "languages"]}
+      />
     </Page>
   </Document>
 );

@@ -2,6 +2,7 @@ import {
   Document, Page, Text, View, StyleSheet, Svg, Rect,
 } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const ACCENT = "#ec4899";
 const INK = "#0f172a";
@@ -139,6 +140,8 @@ export const PortfolioTemplate = ({ profile }: Props) => {
             ))}
           </>
         )}
+
+        <ExtraSections profile={profile} accent="#ec4899" skip={["projects"]} />
       </Page>
     </Document>
   );

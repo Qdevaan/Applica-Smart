@@ -2,6 +2,7 @@ import {
   Document, Page, Text, View, StyleSheet, Svg, Rect,
 } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const ACCENT = "#10b981";
 const INK = "#0f172a";
@@ -180,6 +181,8 @@ export const DevTemplate = ({ profile }: Props) => {
             ))}
           </>
         )}
+
+        <ExtraSections profile={profile} accent="#10b981" skip={["projects"]} />
       </Page>
     </Document>
   );

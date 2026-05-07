@@ -6,12 +6,14 @@ import type { SignupFormData } from "../utils/validators/signupSchema";
 export const useSignup = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const [needsEmailConfirmation, setNeedsEmailConfirmation] = useState(false);
   const navigate = useNavigate();
 
   const signup = async (data: SignupFormData) => {
     setIsLoading(true);
     setError("");
+    setSuccessMessage("");
     setNeedsEmailConfirmation(false);
 
     try {
@@ -30,16 +32,17 @@ export const useSignup = () => {
         throw new Error("Sign up failed");
       }
 
-      // Check if email confirmation is required
       if (authData.session === null && authData.user && !authData.user.confirmed_at) {
         setNeedsEmailConfirmation(true);
-        setError("Account created! Please check your email to verify your account before logging in.");
+        const firstName = data.fullName?.split(" ")[0] || "there";
+        setSuccessMessage(
+          `Welcome aboard, ${firstName}! We just sent a confirmation link to ${data.email}. Open it to activate your account, then sign in to start crafting your CV.`
+        );
         return authData;
       }
 
-      // If session exists, user is logged in automatically
       navigate("/dashboard");
-      
+
       return authData;
     } catch (err: any) {
       const errorMessage = err.message || "Failed to sign up. Please try again.";
@@ -50,5 +53,5 @@ export const useSignup = () => {
     }
   };
 
-  return { signup, isLoading, error, needsEmailConfirmation };
+  return { signup, isLoading, error, successMessage, needsEmailConfirmation };
 };

@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const ACCENT = "#7c3aed";
 const ACCENT_LIGHT = "#ede9fe";
@@ -133,6 +134,8 @@ export const CreativeTemplate = ({ profile }: Props) => (
               ))}
             </View>
           )}
+
+          <ExtraSections profile={profile} accent="#7c3aed" compact />
         </View>
       </View>
     </Page>

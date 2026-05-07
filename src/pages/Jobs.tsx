@@ -1,11 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Zap } from "lucide-react";
+import { RefreshCw, Zap } from "lucide-react";
 import { useAuth } from "../hooks/useAuth";
 import { pipelineService, type JobAnalysis } from "../services/pipeline.service";
 import type { Profile } from "../lib/supabase";
 import JobCard from "../components/jobs/JobCard";
 import Button from "../components/ui/Button";
+
+const JOBS_CACHE_PREFIX = "applica:jobs:";
+
+interface JobsCacheEntry {
+  results: JobAnalysis[];
+  fetchedAt: number;
+}
+
+const readJobsCache = (userId: string): JobsCacheEntry | null => {
+  try {
+    const raw = localStorage.getItem(JOBS_CACHE_PREFIX + userId);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as JobsCacheEntry;
+    if (!Array.isArray(parsed.results)) return null;
+    return parsed;
+  } catch {
+    return null;
+  }
+};
+
+const writeJobsCache = (userId: string, results: JobAnalysis[]) => {
+  try {
+    const entry: JobsCacheEntry = { results, fetchedAt: Date.now() };
+    localStorage.setItem(JOBS_CACHE_PREFIX + userId, JSON.stringify(entry));
+  } catch {
+    // storage full / disabled — ignore
+  }
+};
+
+const formatFetchedAt = (ts: number): string => {
+  const diffMs = Date.now() - ts;
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins} min${mins === 1 ? "" : "s"} ago`;
+  const hours = Math.round(mins / 60);
+  if (hours < 24) return `${hours} hour${hours === 1 ? "" : "s"} ago`;
+  const days = Math.round(hours / 24);
+  return `${days} day${days === 1 ? "" : "s"} ago`;
+};
 
 function profileToText(profile: Profile): string {
   const lines: string[] = [];
@@ -35,8 +74,19 @@ function profileToText(profile: Profile): string {
 const Jobs = () => {
   const { profile } = useAuth();
   const [results, setResults] = useState<JobAnalysis[]>([]);
+  const [fetchedAt, setFetchedAt] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Load cached results once profile is available — survives page reloads / nav
+  useEffect(() => {
+    if (!profile?.id) return;
+    const cached = readJobsCache(profile.id);
+    if (cached) {
+      setResults(cached.results);
+      setFetchedAt(cached.fetchedAt);
+    }
+  }, [profile?.id]);
 
   const handleAnalyze = async () => {
     if (!profile) return;
@@ -45,6 +95,9 @@ const Jobs = () => {
     try {
       const data = await pipelineService.analyzeBatch(profileToText(profile));
       setResults(data);
+      const now = Date.now();
+      setFetchedAt(now);
+      writeJobsCache(profile.id, data);
     } catch (err: unknown) {
       setError(
         err instanceof Error
@@ -55,6 +108,8 @@ const Jobs = () => {
       setLoading(false);
     }
   };
+
+  const hasCached = results.length > 0;
 
   return (
     <div className="min-h-screen p-4 sm:p-6 md:p-8">
@@ -90,15 +145,33 @@ const Jobs = () => {
             </p>
           )}
 
-          <Button
-            onClick={handleAnalyze}
-            disabled={!profile || loading}
-            variant="primary"
-            className="flex items-center gap-2 mb-6"
-          >
-            <Zap className="w-4 h-4" />
-            {loading ? "Analyzing…" : "Find Matching Jobs"}
-          </Button>
+          <div className="flex flex-wrap items-center gap-3 mb-6">
+            <Button
+              onClick={handleAnalyze}
+              disabled={!profile || loading}
+              variant="primary"
+              className="flex items-center gap-2"
+            >
+              {hasCached ? (
+                <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
+              ) : (
+                <Zap className="w-4 h-4" />
+              )}
+              {loading
+                ? "Analyzing…"
+                : hasCached
+                ? "Refresh Matches"
+                : "Find Matching Jobs"}
+            </Button>
+            {hasCached && fetchedAt && !loading && (
+              <span
+                className="text-xs"
+                style={{ color: "var(--color-text-muted)" }}
+              >
+                Cached · last updated {formatFetchedAt(fetchedAt)}
+              </span>
+            )}
+          </div>
 
           {error && (
             <div className="rounded-lg p-4 mb-6 border" style={{ backgroundColor: "#fef2f2", borderColor: "#fecaca" }}>

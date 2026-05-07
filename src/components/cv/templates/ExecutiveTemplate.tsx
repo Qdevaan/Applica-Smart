@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const styles = StyleSheet.create({
   page: { backgroundColor: "#FFFFFF", fontFamily: "Times-Roman", padding: 0 },
@@ -124,6 +125,8 @@ export const ExecutiveTemplate = ({ profile }: Props) => (
             </View>
           </View>
         )}
+
+        <ExtraSections profile={profile} accent="#0b1d3a" />
       </View>
     </Page>
   </Document>

@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const ACCENT = "#0f172a";
 const SPINE = "#cbd5e1";
@@ -149,6 +150,8 @@ export const TimelineTemplate = ({ profile }: Props) => {
             </View>
           </>
         )}
+
+        <ExtraSections profile={profile} accent="#0f172a" />
       </Page>
     </Document>
   );

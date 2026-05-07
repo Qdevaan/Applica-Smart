@@ -9,11 +9,12 @@ import { useSignup } from "../../hooks/useSignup";
 import SignUpFields from "../auth/AuthFields/SignUpFields";
 import Button from "../ui/Button";
 import FormError from "../ui/FormError";
+import FormSuccess from "../ui/FormSuccess";
 import SocialAuthButtons from "../auth/SocialAuthButtons";
 import PasswordStrengthBar from "../auth/PasswordStrengthBar";
 
 const SignUpForm = () => {
-  const { signup, isLoading, error } = useSignup();
+  const { signup, isLoading, error, successMessage } = useSignup();
 
   const {
     register,
@@ -42,6 +43,9 @@ const SignUpForm = () => {
       transition={{ delay: 0.2 }}
       className="space-y-6"
     >
+      {successMessage && (
+        <FormSuccess title="Almost there - check your inbox" message={successMessage} icon="mail" />
+      )}
       {error && <FormError message={error} />}
 
       <SignUpFields register={register} errors={errors} />

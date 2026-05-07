@@ -30,15 +30,34 @@ const ProfileSidebarNav = () => {
   const [active, setActive] = useState<string>("basic");
 
   useEffect(() => {
+    const visibility = new Map<string, number>();
+
+    const recompute = () => {
+      let bestId: string | null = null;
+      let bestTop = Number.POSITIVE_INFINITY;
+      for (const item of PROFILE_NAV) {
+        const el = document.getElementById(item.id);
+        if (!el) continue;
+        if (!visibility.get(item.id)) continue;
+        const top = el.getBoundingClientRect().top;
+        if (top < bestTop) {
+          bestTop = top;
+          bestId = item.id;
+        }
+      }
+      if (bestId) setActive(bestId);
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          setActive(visible[0].target.id);
+        for (const e of entries) {
+          visibility.set(e.target.id, e.intersectionRatio);
         }
+        recompute();
       },
-      { rootMargin: "-30% 0px -55% 0px", threshold: 0 }
+      { rootMargin: "-96px 0px -55% 0px", threshold: [0, 0.25, 0.5, 0.75, 1] }
     );
+
     PROFILE_NAV.forEach((item) => {
       const el = document.getElementById(item.id);
       if (el) observer.observe(el);
@@ -47,7 +66,14 @@ const ProfileSidebarNav = () => {
   }, []);
 
   return (
-    <nav className="hidden lg:block sticky top-24 self-start">
+    <nav
+      className="hidden lg:block sticky top-20 self-start z-20 max-h-[calc(100vh-6rem)] overflow-y-auto rounded-xl border p-2 backdrop-blur-md"
+      style={{
+        backgroundColor: "color-mix(in srgb, var(--color-surface) 88%, transparent)",
+        borderColor: "var(--color-accent-light)",
+      }}
+      aria-label="Profile sections"
+    >
       <ul className="space-y-1">
         {PROFILE_NAV.map((item) => {
           const Icon = item.icon;
@@ -56,9 +82,11 @@ const ProfileSidebarNav = () => {
             <li key={item.id}>
               <a
                 href={`#${item.id}`}
+                aria-current={isActive ? "true" : undefined}
                 className="relative flex items-center gap-2 px-3 py-2 rounded-lg text-sm transition-colors"
                 style={{
                   color: isActive ? "var(--color-primary)" : "var(--color-text-main)",
+                  fontWeight: isActive ? 600 : 500,
                 }}
               >
                 {isActive && (

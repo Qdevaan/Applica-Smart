@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const GOLD = "#b8860b";
 const INK = "#1a1a1a";
@@ -113,6 +114,8 @@ export const ElegantSerifTemplate = ({ profile }: Props) => (
           </View>
         )}
       </View>
+
+      <ExtraSections profile={profile} accent="#b8860b" skip={["languages"]} />
     </Page>
   </Document>
 );

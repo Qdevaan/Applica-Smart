@@ -54,7 +54,7 @@ const ProfileLivePreview = () => {
 
   if (!debouncedProfile || !TemplateComp) {
     return (
-      <div className="hidden lg:block sticky top-24 self-start rounded-2xl border h-[calc(100vh-7rem)]"
+      <div className="hidden lg:block sticky top-20 self-start rounded-2xl border h-[calc(100vh-6rem)]"
            style={{ borderColor: "var(--color-accent-light)" }} />
     );
   }
@@ -69,7 +69,7 @@ const ProfileLivePreview = () => {
 
   return (
     <>
-      <aside className="hidden lg:block sticky top-24 self-start w-full rounded-2xl border overflow-hidden h-[calc(100vh-7rem)]"
+      <aside className="hidden lg:block sticky top-20 self-start w-full rounded-2xl border overflow-hidden h-[calc(100vh-6rem)]"
              style={{ borderColor: "var(--color-accent-light)", backgroundColor: "var(--color-surface)" }}>
         <div className="px-3 py-2 text-xs font-semibold flex items-center gap-2 border-b"
              style={{ borderColor: "var(--color-accent-light)", color: "var(--color-primary)" }}>

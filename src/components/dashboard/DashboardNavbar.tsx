@@ -118,6 +118,20 @@ const DashboardNavbar = () => {
               ariaLabel="Open profile"
               onClick={() => navigate("/profile")}
             />
+            <motion.button
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleLogout}
+              aria-label="Logout"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors"
+              style={{
+                color: "var(--color-primary)",
+                backgroundColor: "color-mix(in srgb, var(--color-accent-light) 60%, transparent)",
+              }}
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden lg:inline text-sm">Logout</span>
+            </motion.button>
           </div>
 
           {/* Mobile Menu Button */}

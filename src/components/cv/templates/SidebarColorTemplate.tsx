@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet, Image } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const ACCENT = "#0f766e";
 const ACCENT_DARK = "#0b5950";
@@ -175,6 +176,8 @@ export const SidebarColorTemplate = ({ profile }: Props) => (
             ))}
           </>
         )}
+
+        <ExtraSections profile={profile} accent="#0f766e" skip={["projects", "languages"]} />
       </View>
     </Page>
   </Document>

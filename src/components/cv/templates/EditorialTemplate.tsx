@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const ACCENT = "#7f1d1d";
 const INK = "#111111";
@@ -156,6 +157,8 @@ export const EditorialTemplate = ({ profile }: Props) => {
             )}
           </View>
         </View>
+
+        <ExtraSections profile={profile} accent="#7f1d1d" skip={["languages"]} />
       </Page>
     </Document>
   );

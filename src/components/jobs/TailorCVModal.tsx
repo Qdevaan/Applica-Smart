@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Download, Sparkles, Wand2 } from "lucide-react";
 import {
@@ -103,7 +104,7 @@ const TailorCVModal = ({ isOpen, onClose, job, profile }: Props) => {
     }
   };
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
@@ -112,21 +113,21 @@ const TailorCVModal = ({ isOpen, onClose, job, profile }: Props) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60]"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            className="fixed inset-0 z-[70] flex items-center justify-center p-4 pointer-events-none"
           >
             <div
-              className="w-full max-w-3xl max-h-[90vh] overflow-y-auto rounded-2xl shadow-2xl pointer-events-auto"
+              className="w-full max-w-3xl max-h-[90vh] flex flex-col overflow-hidden rounded-2xl shadow-2xl pointer-events-auto"
               style={{ backgroundColor: "var(--color-surface)" }}
             >
               {/* Header */}
               <div
-                className="sticky top-0 z-10 flex items-center justify-between p-5 border-b backdrop-blur-md"
+                className="shrink-0 flex items-center justify-between p-5 border-b backdrop-blur-md"
                 style={{
                   backgroundColor:
                     "color-mix(in srgb, var(--color-surface) 95%, transparent)",
@@ -163,7 +164,7 @@ const TailorCVModal = ({ isOpen, onClose, job, profile }: Props) => {
                 </button>
               </div>
 
-              <div className="p-5 space-y-5">
+              <div className="flex-1 overflow-y-auto p-5 space-y-5">
                 {/* Template picker */}
                 <div>
                   <label
@@ -277,26 +278,33 @@ const TailorCVModal = ({ isOpen, onClose, job, profile }: Props) => {
                     </p>
                   </div>
                 </label>
+              </div>
 
-                {/* Actions */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-2">
-                  <Button
-                    onClick={handleDownload}
-                    disabled={isDownloading}
-                    variant="primary"
-                    className="flex-1"
-                  >
-                    <Download className="w-4 h-4" />
-                    {isDownloading ? "Generating…" : "Download tailored CV"}
-                  </Button>
-                  <Button
-                    onClick={onClose}
-                    variant="outline"
-                    className="sm:w-auto"
-                  >
-                    Cancel
-                  </Button>
-                </div>
+              {/* Footer (fixed bottom bar) */}
+              <div
+                className="shrink-0 flex flex-col sm:flex-row gap-3 p-5 border-t backdrop-blur-md"
+                style={{
+                  backgroundColor:
+                    "color-mix(in srgb, var(--color-surface) 95%, transparent)",
+                  borderColor: "var(--color-accent-light)",
+                }}
+              >
+                <Button
+                  onClick={handleDownload}
+                  disabled={isDownloading}
+                  variant="primary"
+                  className="flex-1"
+                >
+                  <Download className="w-4 h-4" />
+                  {isDownloading ? "Generating…" : "Download tailored CV"}
+                </Button>
+                <Button
+                  onClick={onClose}
+                  variant="outline"
+                  className="sm:w-auto"
+                >
+                  Cancel
+                </Button>
               </div>
             </div>
           </motion.div>
@@ -311,7 +319,8 @@ const TailorCVModal = ({ isOpen, onClose, job, profile }: Props) => {
           )}
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 

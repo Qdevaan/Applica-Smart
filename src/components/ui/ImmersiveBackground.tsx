@@ -12,7 +12,7 @@ const ImmersiveBackground = ({ children, intensity = "normal" }: Props) => {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden"
+      className="relative min-h-screen overflow-clip"
       style={{
         background:
           "linear-gradient(to bottom right, var(--color-background), var(--color-surface), var(--color-accent-light))",

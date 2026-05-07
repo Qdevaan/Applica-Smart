@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 // ATS-friendly: no colors, no columns, no graphics. Standard fonts and section
 // headings that ATS parsers reliably detect.
@@ -92,6 +93,8 @@ export const ATSTemplate = ({ profile }: Props) => {
             <Text style={styles.body}>{profile.hobbies.join(", ")}</Text>
           </View>
         )}
+
+        <ExtraSections profile={profile} accent="#000000" />
       </Page>
     </Document>
   );

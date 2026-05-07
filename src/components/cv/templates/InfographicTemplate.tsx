@@ -2,6 +2,7 @@ import {
   Document, Page, Text, View, StyleSheet, Svg, Rect, Circle, Path, G,
 } from "@react-pdf/renderer";
 import type { Profile, SkillLevel, Language } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const ACCENT = "#f59e0b";
 const INK = "#1f2937";
@@ -153,6 +154,8 @@ export const InfographicTemplate = ({ profile }: Props) => {
             ))}
           </>
         )}
+
+        <ExtraSections profile={profile} accent="#f59e0b" skip={["languages"]} />
       </Page>
     </Document>
   );

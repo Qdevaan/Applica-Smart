@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const styles = StyleSheet.create({
   page: {
@@ -184,6 +185,8 @@ export const ClassicTemplate = ({ profile }: ClassicTemplateProps) => {
             <Text style={styles.skillsList}>{profile.hobbies.join(", ")}</Text>
           </View>
         )}
+
+        <ExtraSections profile={profile} accent="#111827" />
       </Page>
     </Document>
   );
