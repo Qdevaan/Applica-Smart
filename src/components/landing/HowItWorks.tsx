@@ -1,4 +1,4 @@
-import { color, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { HOW_IT_WORKS_STEPS } from "../../utils/constants";
 import {

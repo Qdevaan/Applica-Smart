@@ -2,27 +2,22 @@ import React from "react";
 import { pdf } from "@react-pdf/renderer";
 import { supabase } from "../lib/supabase";
 import type { Profile } from "../lib/supabase";
+import {
+  templates,
+  templateCategories,
+  loadTemplateComponent,
+  type TemplateId,
+  type TemplateCategory,
+  type TemplateMeta,
+} from "../components/cv/templates";
 
-export type CVTemplate =
-  | "modern"
-  | "classic"
-  | "minimal"
-  | "executive"
-  | "creative"
-  | "ats"
-  | "compact";
-
-export type TemplateCategory =
-  | "all"
-  | "modern"
-  | "traditional"
-  | "creative"
-  | "executive"
-  | "ats"
-  | "compact";
+// Re-export for backward compat with existing imports
+export type CVTemplate = TemplateId;
+export type { TemplateCategory } from "../components/cv/templates";
+export { templateCategories };
 
 export interface CVTemplateOption {
-  id: CVTemplate;
+  id: TemplateId;
   name: string;
   description: string;
   preview: string;
@@ -31,81 +26,17 @@ export interface CVTemplateOption {
   accentColor: string;
 }
 
-export const templateCategories: { id: TemplateCategory; label: string }[] = [
-  { id: "all", label: "All" },
-  { id: "modern", label: "Modern" },
-  { id: "traditional", label: "Traditional" },
-  { id: "creative", label: "Creative" },
-  { id: "executive", label: "Executive" },
-  { id: "ats", label: "ATS-Friendly" },
-  { id: "compact", label: "Compact" },
-];
-
-export const availableTemplates: CVTemplateOption[] = [
-  {
-    id: "modern",
-    name: "Modern Professional",
-    description: "Clean and contemporary design with color accents",
-    preview: "/templates/modern-preview.png",
-    category: "modern",
-    bestFor: ["Software", "Product", "Marketing"],
-    accentColor: "#1e3a5f",
-  },
-  {
-    id: "classic",
-    name: "Classic Traditional",
-    description: "Timeless and formal layout for traditional industries",
-    preview: "/templates/classic-preview.png",
-    category: "traditional",
-    bestFor: ["Finance", "Law", "Academia"],
-    accentColor: "#111827",
-  },
-  {
-    id: "minimal",
-    name: "Minimal Clean",
-    description: "Simple and elegant design with maximum readability",
-    preview: "/templates/minimal-preview.png",
-    category: "modern",
-    bestFor: ["Design", "Writing", "Consulting"],
-    accentColor: "#374151",
-  },
-  {
-    id: "executive",
-    name: "Executive",
-    description: "Formal navy & gold layout for senior roles and traditional industries",
-    preview: "/templates/executive-preview.png",
-    category: "executive",
-    bestFor: ["Senior leadership", "Banking", "Operations"],
-    accentColor: "#1e3a8a",
-  },
-  {
-    id: "creative",
-    name: "Creative",
-    description: "Vibrant accent palette for design, marketing, and product roles",
-    preview: "/templates/creative-preview.png",
-    category: "creative",
-    bestFor: ["Design", "Marketing", "Media"],
-    accentColor: "#C1121F",
-  },
-  {
-    id: "ats",
-    name: "ATS-Optimized",
-    description: "Plain single-column layout designed to pass automated resume screeners",
-    preview: "/templates/ats-preview.png",
-    category: "ats",
-    bestFor: ["High-volume applications", "Large companies"],
-    accentColor: "#000000",
-  },
-  {
-    id: "compact",
-    name: "Compact",
-    description: "Two-column dense layout that fits a strong career on a single page",
-    preview: "/templates/compact-preview.png",
-    category: "compact",
-    bestFor: ["Senior IC", "Long careers", "One-page mandates"],
-    accentColor: "#780000",
-  },
-];
+export const availableTemplates: CVTemplateOption[] = templates.map(
+  ({ id, name, description, preview, category, bestFor, accentColor }: TemplateMeta) => ({
+    id,
+    name,
+    description,
+    preview,
+    category,
+    bestFor,
+    accentColor,
+  })
+);
 
 class CVService {
   /**
@@ -115,76 +46,13 @@ class CVService {
     profile: Profile,
     templateId: CVTemplate
   ): Promise<Blob> {
-    try {
-      // Dynamically import the selected template and generate PDF
-      let blob: Blob;
-
-      switch (templateId) {
-        case "modern": {
-          const { ModernTemplate } = await import(
-            "../components/cv/templates/ModernTemplate"
-          );
-          const doc = React.createElement(ModernTemplate, { profile });
-          blob = await pdf(doc as any).toBlob();
-          break;
-        }
-        case "classic": {
-          const { ClassicTemplate } = await import(
-            "../components/cv/templates/ClassicTemplate"
-          );
-          const doc = React.createElement(ClassicTemplate, { profile });
-          blob = await pdf(doc as any).toBlob();
-          break;
-        }
-        case "minimal": {
-          const { MinimalTemplate } = await import(
-            "../components/cv/templates/MinimalTemplate"
-          );
-          const doc = React.createElement(MinimalTemplate, { profile });
-          blob = await pdf(doc as any).toBlob();
-          break;
-        }
-        case "executive": {
-          const { ExecutiveTemplate } = await import(
-            "../components/cv/templates/ExecutiveTemplate"
-          );
-          const doc = React.createElement(ExecutiveTemplate, { profile });
-          blob = await pdf(doc as any).toBlob();
-          break;
-        }
-        case "creative": {
-          const { CreativeTemplate } = await import(
-            "../components/cv/templates/CreativeTemplate"
-          );
-          const doc = React.createElement(CreativeTemplate, { profile });
-          blob = await pdf(doc as any).toBlob();
-          break;
-        }
-        case "ats": {
-          const { ATSTemplate } = await import(
-            "../components/cv/templates/ATSTemplate"
-          );
-          const doc = React.createElement(ATSTemplate, { profile });
-          blob = await pdf(doc as any).toBlob();
-          break;
-        }
-        case "compact": {
-          const { CompactTemplate } = await import(
-            "../components/cv/templates/CompactTemplate"
-          );
-          const doc = React.createElement(CompactTemplate, { profile });
-          blob = await pdf(doc as any).toBlob();
-          break;
-        }
-        default:
-          throw new Error(`Unknown template: ${templateId}`);
-      }
-
-      return blob;
-    } catch (error) {
-      console.error("Error generating CV:", error);
-      throw error;
+    const Component = await loadTemplateComponent(templateId);
+    if (!Component) {
+      throw new Error(`Unknown CV template: ${templateId}`);
     }
+    const doc = React.createElement(Component, { profile });
+    // pdf() expects a DocumentElement; @react-pdf typings require any cast.
+    return await pdf(doc as any).toBlob();
   }
 
   /**
@@ -292,6 +160,36 @@ class CVService {
     } catch (error) {
       console.error("Error fetching CV history:", error);
       throw error;
+    }
+  }
+
+  /**
+   * Get the most recently used template id and file URL for a user.
+   * Returns null when the user has no CV documents yet.
+   */
+  async getLastTemplate(
+    userId: string
+  ): Promise<{ templateId: CVTemplate; fileUrl: string | null; createdAt: string } | null> {
+    try {
+      const { data, error } = await supabase
+        .from("cv_documents")
+        .select("template_used, file_url, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (!data || !data.template_used) return null;
+
+      return {
+        templateId: data.template_used as CVTemplate,
+        fileUrl: (data.file_url as string | null) ?? null,
+        createdAt: data.created_at as string,
+      };
+    } catch (error) {
+      console.error("Error fetching last template:", error);
+      return null;
     }
   }
 }

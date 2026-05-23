@@ -3,29 +3,27 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
-  Briefcase,
   FileText,
   Settings,
-  User,
   LogOut,
   Menu,
   X,
-  Bell,
   Search,
 } from "lucide-react";
 import { APP_NAME } from "../../utils/constants";
 import { useAuth } from "../../hooks/useAuth";
+import Avatar from "../ui/Avatar";
+import { useAvatar } from "../../hooks/useAvatar";
 
 const DashboardNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const { signOut } = useAuth();
+  const { url: avatarUrl, name } = useAvatar();
 
   const navLinks = [
     { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { label: "Applications", href: "/applications", icon: Briefcase },
     { label: "Jobs", href: "/jobs", icon: Search },
     { label: "Resume", href: "/resume", icon: FileText },
     { label: "Settings", href: "/settings", icon: Settings },
@@ -112,78 +110,28 @@ const DashboardNavbar = () => {
 
           {/* Right Section */}
           <div className="hidden md:flex items-center gap-3">
-            {/* Notifications */}
+            <Avatar
+              url={avatarUrl}
+              name={name}
+              size="md"
+              ring
+              ariaLabel="Open profile"
+              onClick={() => navigate("/profile")}
+            />
             <motion.button
-              whileHover={{ scale: 1.1, rotate: -10 }}
-              whileTap={{ scale: 0.92 }}
-              className="relative p-2 rounded-lg transition-colors"
-              style={{ color: "var(--color-text-main)" }}
+              whileHover={{ y: -2 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleLogout}
+              aria-label="Logout"
+              className="flex items-center gap-2 px-3 py-2 rounded-lg font-medium transition-colors"
+              style={{
+                color: "var(--color-primary)",
+                backgroundColor: "color-mix(in srgb, var(--color-accent-light) 60%, transparent)",
+              }}
             >
-              <Bell className="w-5 h-5" />
-              <motion.span
-                animate={{ scale: [1, 1.4, 1], opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="absolute top-1 right-1 w-2 h-2 rounded-full"
-                style={{ backgroundColor: "var(--color-primary-hover)" }}
-              />
+              <LogOut className="w-4 h-4" />
+              <span className="hidden lg:inline text-sm">Logout</span>
             </motion.button>
-
-            {/* Profile Dropdown */}
-            <div className="relative">
-              <motion.button
-                whileHover={{ scale: 1.08 }}
-                whileTap={{ scale: 0.92 }}
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-                className="flex items-center gap-2 p-2 rounded-lg transition-colors"
-                style={{ color: "var(--color-text-main)" }}
-              >
-                <User className="w-5 h-5" />
-              </motion.button>
-
-              <AnimatePresence>
-                {isProfileOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute right-0 mt-2 w-48 rounded-xl shadow-2xl py-2 backdrop-blur-md"
-                    style={{
-                      backgroundColor: "color-mix(in srgb, var(--color-surface) 92%, transparent)",
-                      border: "1px solid var(--color-accent-light)",
-                    }}
-                  >
-                    <Link
-                      to="/profile"
-                      className="flex items-center gap-2 px-4 py-2 transition-colors hover:bg-black/5"
-                      style={{ color: "var(--color-text-main)" }}
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <User className="w-4 h-4" />
-                      Profile
-                    </Link>
-                    <Link
-                      to="/settings"
-                      className="flex items-center gap-2 px-4 py-2 transition-colors hover:bg-black/5"
-                      style={{ color: "var(--color-text-main)" }}
-                      onClick={() => setIsProfileOpen(false)}
-                    >
-                      <Settings className="w-4 h-4" />
-                      Settings
-                    </Link>
-                    <hr className="my-2" style={{ borderColor: "var(--color-accent-light)" }} />
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center gap-2 px-4 py-2 w-full text-left transition-colors hover:bg-black/5"
-                      style={{ color: "var(--color-primary)" }}
-                    >
-                      <LogOut className="w-4 h-4" />
-                      Logout
-                    </button>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
           </div>
 
           {/* Mobile Menu Button */}
@@ -265,16 +213,6 @@ const DashboardNavbar = () => {
               })}
 
               <hr style={{ borderColor: "var(--color-accent-light)" }} className="my-2" />
-
-              <Link
-                to="/profile"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-lg font-medium transition-colors"
-                style={{ color: "var(--color-text-main)" }}
-              >
-                <User className="w-5 h-5" />
-                Profile
-              </Link>
 
               <button
                 onClick={handleLogout}

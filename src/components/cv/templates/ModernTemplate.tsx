@@ -7,6 +7,7 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 // Register fonts (optional - using default fonts)
 Font.register({
@@ -293,6 +294,8 @@ export const ModernTemplate = ({ profile }: ModernTemplateProps) => {
               ))}
             </View>
           )}
+
+          <ExtraSections profile={profile} accent="#1e3a5f" />
         </View>
       </Page>
     </Document>

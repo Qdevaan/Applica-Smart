@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 const styles = StyleSheet.create({
   page: {
@@ -212,6 +213,8 @@ export const MinimalTemplate = ({ profile }: MinimalTemplateProps) => {
             </Text>
           </View>
         )}
+
+        <ExtraSections profile={profile} accent="#374151" />
       </Page>
     </Document>
   );

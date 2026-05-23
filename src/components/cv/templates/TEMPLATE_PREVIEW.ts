@@ -1,7 +1,7 @@
 // Template Preview Component - For Testing Purposes Only
 // This file demonstrates what each template looks like
 
-import { Profile } from "../lib/supabase";
+import type { Profile } from "../../../lib/supabase";
 
 // Sample data for preview
 export const sampleProfile: Profile = {
@@ -88,7 +88,102 @@ export const sampleProfile: Profile = {
     "Photography",
     "Hiking"
   ],
-  
+
+  photo_url: "https://i.pravatar.cc/300?u=applica-sample",
+  accent_color: "#1e3a5f",
+
+  skill_levels: [
+    { name: "React", level: 5 },
+    { name: "TypeScript", level: 5 },
+    { name: "Node.js", level: 4 },
+    { name: "Python", level: 4 },
+    { name: "PostgreSQL", level: 4 },
+    { name: "AWS", level: 3 },
+    { name: "Docker", level: 3 },
+    { name: "Git", level: 5 },
+  ],
+
+  links: [
+    { label: "GitHub", url: "https://github.com/johndoe", icon: "github" },
+    { label: "LinkedIn", url: "https://linkedin.com/in/johndoe", icon: "linkedin" },
+    { label: "Portfolio", url: "https://johndoe.dev", icon: "globe" },
+  ],
+
+  projects: [
+    {
+      id: "p1",
+      name: "Applica-Smart",
+      role: "Lead Engineer",
+      description: "AI-driven job application copilot with CV/cover-letter generation and recommendation pipeline.",
+      link: "https://applica-smart.example",
+      tech: ["React", "TypeScript", "Supabase", "Python"],
+      startDate: "2025-06",
+      endDate: "2026-05",
+    },
+    {
+      id: "p2",
+      name: "Open-Source Resume Kit",
+      role: "Maintainer",
+      description: "PDF resume primitives library used by 4k+ developers.",
+      link: "https://github.com/johndoe/resume-kit",
+      tech: ["TypeScript", "react-pdf", "Vite"],
+      startDate: "2023-01",
+      endDate: "2024-08",
+    },
+  ],
+
+  certifications: [
+    {
+      id: "c1",
+      name: "AWS Certified Solutions Architect — Associate",
+      issuer: "Amazon Web Services",
+      date: "2024-03",
+      url: "https://aws.amazon.com/verification",
+      credentialId: "AWS-SA-123456",
+    },
+  ],
+
+  languages: [
+    { name: "English", proficiency: "native" },
+    { name: "Spanish", proficiency: "fluent" },
+    { name: "Urdu", proficiency: "professional" },
+  ],
+
+  publications: [
+    {
+      id: "pub1",
+      title: "Latency-bounded recommendation pipelines for skill-based job matching",
+      venue: "IEEE BigData Workshops",
+      year: "2024",
+      url: "https://example.com/paper",
+      authors: ["John Doe", "A. Smith", "B. Khan"],
+    },
+  ],
+
+  awards: [
+    {
+      id: "a1",
+      title: "Engineering Excellence Award",
+      issuer: "Tech Company Inc.",
+      year: "2023",
+      description: "Top 1% of engineers globally for shipping platform-critical infra.",
+    },
+  ],
+
+  volunteer: [
+    {
+      id: "v1",
+      organization: "Code for All",
+      role: "Mentor",
+      startDate: "2022-09",
+      endDate: "2024-06",
+      description: "Mentored 12 junior devs through OSS contribution programs.",
+    },
+  ],
+
+  references_list: [],
+  template_prefs: { defaultTemplateId: "modern", accentColor: "#1e3a5f" },
+
   preferences: null,
   cv_link: null,
   created_at: "2024-01-01T00:00:00Z",

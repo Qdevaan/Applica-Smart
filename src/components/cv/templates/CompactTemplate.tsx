@@ -1,5 +1,6 @@
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import type { Profile } from "../../../lib/supabase";
+import { ExtraSections } from "./_extraSections";
 
 // Single-page-friendly compact layout. Tight typography, small section
 // dividers, generous use of horizontal space.
@@ -107,6 +108,8 @@ export const CompactTemplate = ({ profile }: Props) => {
             )}
           </View>
         </View>
+
+        <ExtraSections profile={profile} accent="#780000" baseFontSize={9} />
       </Page>
     </Document>
   );

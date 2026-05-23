@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronDown, ChevronUp, Wand2 } from "lucide-react";
+import { ChevronDown, ChevronUp, FileText, Wand2 } from "lucide-react";
 import type { JobAnalysis } from "../../services/pipeline.service";
 import { useAuth } from "../../hooks/useAuth";
 import TailorCVModal from "./TailorCVModal";
+import CVPreviewDrawer from "./CVPreviewDrawer";
 
 interface Props {
   job: JobAnalysis;
@@ -19,6 +20,7 @@ const recommendationColor: Record<string, string> = {
 const JobCard = ({ job, rank }: Props) => {
   const [showLetter, setShowLetter] = useState(false);
   const [showTailor, setShowTailor] = useState(false);
+  const [showCV, setShowCV] = useState(false);
   const { profile } = useAuth();
 
   return (
@@ -90,6 +92,21 @@ const JobCard = ({ job, rank }: Props) => {
             Tailor CV for this job
           </button>
         )}
+
+        {profile && (
+          <button
+            onClick={() => setShowCV(true)}
+            className="flex items-center gap-1.5 text-sm font-semibold px-3 py-1.5 rounded-full border transition-all hover:shadow-md"
+            style={{
+              borderColor: "var(--color-primary)",
+              color: "var(--color-primary)",
+              backgroundColor: "transparent",
+            }}
+          >
+            <FileText className="w-3.5 h-3.5" />
+            View my CV
+          </button>
+        )}
       </div>
 
       {showLetter && (
@@ -110,6 +127,14 @@ const JobCard = ({ job, rank }: Props) => {
           isOpen={showTailor}
           onClose={() => setShowTailor(false)}
           job={job}
+          profile={profile}
+        />
+      )}
+
+      {profile && (
+        <CVPreviewDrawer
+          isOpen={showCV}
+          onClose={() => setShowCV(false)}
           profile={profile}
         />
       )}

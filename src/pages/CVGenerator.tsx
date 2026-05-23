@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PDFViewer } from "@react-pdf/renderer";
 import { Download, FileText, Check, Eye, ArrowLeft, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import {
   cvService,
@@ -18,6 +18,16 @@ import { ExecutiveTemplate } from "../components/cv/templates/ExecutiveTemplate"
 import { CreativeTemplate } from "../components/cv/templates/CreativeTemplate";
 import { ATSTemplate } from "../components/cv/templates/ATSTemplate";
 import { CompactTemplate } from "../components/cv/templates/CompactTemplate";
+import { ElegantSerifTemplate } from "../components/cv/templates/ElegantSerifTemplate";
+import { EditorialTemplate } from "../components/cv/templates/EditorialTemplate";
+import { TimelineTemplate } from "../components/cv/templates/TimelineTemplate";
+import { GradientTemplate } from "../components/cv/templates/GradientTemplate";
+import { SidebarColorTemplate } from "../components/cv/templates/SidebarColorTemplate";
+import { PhotoHeaderTemplate } from "../components/cv/templates/PhotoHeaderTemplate";
+import { DevTemplate } from "../components/cv/templates/DevTemplate";
+import { PortfolioTemplate } from "../components/cv/templates/PortfolioTemplate";
+import { AcademicTemplate } from "../components/cv/templates/AcademicTemplate";
+import { InfographicTemplate } from "../components/cv/templates/InfographicTemplate";
 import Button from "../components/ui/Button";
 import Toast from "../components/ui/Toast";
 
@@ -32,6 +42,19 @@ const CVGenerator = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [activeCategory, setActiveCategory] = useState<TemplateCategory>("all");
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const param = searchParams.get("template");
+    if (!param) return;
+    const exists = availableTemplates.some((t) => t.id === param);
+    if (exists) {
+      setSelectedTemplate(param as CVTemplate);
+    }
+    // run once on mount with the initial param value
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const filteredTemplates = useMemo(
     () =>
@@ -95,6 +118,26 @@ const CVGenerator = () => {
         return <ATSTemplate profile={profile} />;
       case "compact":
         return <CompactTemplate profile={profile} />;
+      case "elegant":
+        return <ElegantSerifTemplate profile={profile} />;
+      case "editorial":
+        return <EditorialTemplate profile={profile} />;
+      case "timeline":
+        return <TimelineTemplate profile={profile} />;
+      case "gradient":
+        return <GradientTemplate profile={profile} />;
+      case "sidebar-color":
+        return <SidebarColorTemplate profile={profile} />;
+      case "photo-header":
+        return <PhotoHeaderTemplate profile={profile} />;
+      case "dev":
+        return <DevTemplate profile={profile} />;
+      case "portfolio":
+        return <PortfolioTemplate profile={profile} />;
+      case "academic":
+        return <AcademicTemplate profile={profile} />;
+      case "infographic":
+        return <InfographicTemplate profile={profile} />;
       default:
         return undefined;
     }
